@@ -1,0 +1,17 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f19c0120c9c2a4442bb7c72f3f962297, type: 3}
+  m_Name: Spade 5
+  m_EditorClassIdentifier: 
+  name: Spade5
+  values: 05000000
+  cardAsset: {fileID: 4705075992077169630, guid: 1ca01dca8a0908e45927e722218591d4, type: 3}
