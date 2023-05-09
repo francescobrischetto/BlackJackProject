@@ -1,7 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
-using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.Events;
 
@@ -12,6 +11,8 @@ public struct PlayerInfo
     public bool Won;
 
 }
+
+//This struct will be generated at the end of the round and will be passed to the UI to display the round informations
 public struct GameState
 {
     public int DealerScore;
@@ -24,11 +25,14 @@ public class GameController : MonoBehaviour
     
     //Game Controller keeps the state of the current round
     private RoundState roundState;
-    public List<PlayerController> playerInstances;
+    private List<PlayerController> playerInstances = new List<PlayerController>();
 
     //Observer pattern to notify other objects when the round state change
-    [SerializeField] UnityEvent<RoundState> onRoundStateChange;
+    public UnityEvent<RoundState> onRoundStateChange;
+
+    [field: Header("Player Spawning settings")]
     //Players settings (limited to max 7 players (worst case when the deck can potentially end!)
+    [SerializeField] int maxPlayers = 7;
     [SerializeField] int numberOfPlayers = 7;
     [SerializeField] List<GameObject> playerPositions;
     [SerializeField] List<GameObject> playerPrefabs;
@@ -56,7 +60,18 @@ public class GameController : MonoBehaviour
 
     private void SpawnPlayers()
     {
+        List<int> playerIndexes = Enumerable.Range(0, maxPlayers).ToList();
         //Spawning the players in Place
+        for (int i=0; i<numberOfPlayers; i++)
+        {
+            int randomPlayerIndex = Random.Range(0, playerIndexes.Count);
+            int randomIndex = playerIndexes[randomPlayerIndex];
+            GameObject newPlayer = Instantiate(playerPrefabs[0], playerPositions[randomIndex].transform.position, Quaternion.identity, playerPositions[randomIndex].transform);
+            playerIndexes.RemoveAt(randomPlayerIndex);
+            newPlayer.name = "Player " + i;
+            playerInstances.Add(newPlayer.GetComponent<PlayerController>());
+
+        }
     }
 
     private void GameStart()
@@ -69,13 +84,6 @@ public class GameController : MonoBehaviour
         //Update round state and notify
         roundState = RoundState.START;
         onRoundStateChange.Invoke(roundState);
-
-        //Initialization setup of dealer and players
-        DealerController.Instance.ResetDealer();
-        foreach (PlayerController player in playerInstances)
-        {
-            player.ResetPlayer();
-        }
 
         //Next round state
         StartPlayerTurn();

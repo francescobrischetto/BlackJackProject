@@ -8,6 +8,8 @@ public class DealerController : MonoBehaviour
     public static DealerController Instance { get; private set; }
     public List<int> DealerScore { get; private set; } = new List<int>();
     [SerializeField] List<GameObject> dealerCardsPosition;
+
+
     private void Awake()
     {
         //Singleton setup
@@ -21,7 +23,7 @@ public class DealerController : MonoBehaviour
         }
     }
 
-    public void ResetDealer()
+    private void ResetDealer()
     {
         ResetDealerScore();
         ClearDealerCardPosition();
@@ -44,5 +46,24 @@ public class DealerController : MonoBehaviour
         List<int> newScores = BlackJackUtils.CalculateNewScores(DealerScore, card);
         DealerScore.Clear();
         DealerScore.AddRange(newScores);
+    }
+
+    public void reactToRoundStateChanges(RoundState state)
+    {
+        switch (state)
+        {
+            case RoundState.START:
+                ResetDealer();
+                break;
+
+            case RoundState.PLAYERTURN:
+                break;
+
+            case RoundState.DEALERTURN:
+                break;
+
+            case RoundState.END:
+                break;
+        }
     }
 }

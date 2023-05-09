@@ -25,7 +25,6 @@ public class DeckController : MonoBehaviour
     private bool draggableControlsEnabled = false;
     private bool clickControlsEnabled = false;
 
-
     private void Awake()
     {
         //Singleton setup
@@ -37,11 +36,6 @@ public class DeckController : MonoBehaviour
         {
             Instance = this;
         }
-    }
-
-    private void Start()
-    {
-        Shuffle();
     }
 
     private void DisableControls()
@@ -62,30 +56,11 @@ public class DeckController : MonoBehaviour
         return null;
     }
 
-    public void reactToRoundStateChanges(RoundState state)
+
+    private void Start()
     {
-        switch (state)
-        {
-            case RoundState.START:
-                DisableControls();
-                AppendDiscardedCards();
-                break;
-
-            case RoundState.PLAYERTURN:
-                draggableControlsEnabled = true;
-                break;
-
-            case RoundState.DEALERTURN:
-                draggableControlsEnabled = false;
-                clickControlsEnabled = true;
-                break;
-
-            case RoundState.END:
-                clickControlsEnabled = false;
-                break;
-        }
+        Shuffle();
     }
-
 
     public void Shuffle()
     {
@@ -191,5 +166,29 @@ public class DeckController : MonoBehaviour
             Destroy(newCard);
         }
 
+    }
+
+    public void reactToRoundStateChanges(RoundState state)
+    {
+        switch (state)
+        {
+            case RoundState.START:
+                DisableControls();
+                AppendDiscardedCards();
+                break;
+
+            case RoundState.PLAYERTURN:
+                draggableControlsEnabled = true;
+                break;
+
+            case RoundState.DEALERTURN:
+                draggableControlsEnabled = false;
+                clickControlsEnabled = true;
+                break;
+
+            case RoundState.END:
+                clickControlsEnabled = false;
+                break;
+        }
     }
 }

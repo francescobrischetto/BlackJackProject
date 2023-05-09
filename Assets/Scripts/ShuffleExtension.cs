@@ -1,5 +1,4 @@
 using System;
-using System.Linq;
 using System.Collections.Generic;
 
 public static class ShuffleExtensions
@@ -16,4 +15,5 @@ public static class ShuffleExtensions
             values[i] = value;
         }
     }
+
 }
