@@ -2,9 +2,9 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Deck : MonoBehaviour
+public class DeckController : MonoBehaviour
 {
-    public static Deck Instance { get; private set; }
+    public static DeckController Instance { get; private set; }
 
     //This represents the prefab that should spawn whenever a card is launched
     [SerializeField] List<Card> deckCards;
@@ -105,7 +105,7 @@ public class Deck : MonoBehaviour
             Card returnCard = deckCards[0];
             deckCards.RemoveAt(0);
             discardedCards.Add(returnCard);
-            Debug.Log($"Returned card name {returnCard.name} and value {returnCard.values[0]}");
+            //Debug.Log($"Returned card name {returnCard.name} and value {returnCard.values[0]}");
             return returnCard;
         }
         else
@@ -138,7 +138,7 @@ public class Deck : MonoBehaviour
                         if(clickControlsEnabled)
                         {
                             Card topCard = ThrowCard();
-                            GameController.Instance.ReceiveDealerCard(topCard);
+                            DealerController.Instance.ReceiveDealerCard(topCard);
                         }
                        
                     }
@@ -167,7 +167,7 @@ public class Deck : MonoBehaviour
                         GameObject newCard = Instantiate(topCard.cardAsset, cardPosition, Quaternion.identity);
                         //Localscale of the card should be the same as the deck localscale
                         newCard.transform.localScale = transform.localScale;
-                        StartCoroutine(DestroyCardAfterSeconds(newCard));
+                        StartCoroutine(CO_DestroyCardAfterSeconds(newCard));
                         Rigidbody rb = newCard.GetComponent<Rigidbody>();
                         Vector3 launchDirectionInCameraSpace = (dragEndPosition - dragStartPosition).normalized;
                         Vector3 launchDirectionInWorldSpace = Camera.main.transform.TransformDirection(launchDirectionInCameraSpace);
@@ -183,7 +183,7 @@ public class Deck : MonoBehaviour
         }
     }
 
-    IEnumerator DestroyCardAfterSeconds(GameObject newCard)
+    IEnumerator CO_DestroyCardAfterSeconds(GameObject newCard)
     {
         yield return new WaitForSeconds(3);
         if(newCard != null)

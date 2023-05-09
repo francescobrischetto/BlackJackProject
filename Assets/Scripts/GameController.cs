@@ -5,21 +5,36 @@ using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.Events;
 
+public struct PlayerInfo
+{
+    public string Name;
+    public int Score;
+    public bool Won;
+
+}
+public struct GameState
+{
+    public int DealerScore;
+    public List<PlayerInfo> PlayerInfos;
+}
 public enum RoundState { START, PLAYERTURN, DEALERTURN, END} 
+
 public class GameController : MonoBehaviour
 {
+    
+    //Game Controller keeps the state of the current round
     private RoundState roundState;
+    public List<PlayerController> playerInstances;
+
     //Observer pattern to notify other objects when the round state change
     [SerializeField] UnityEvent<RoundState> onRoundStateChange;
+    //Players settings (limited to max 7 players (worst case when the deck can potentially end!)
     [SerializeField] int numberOfPlayers = 7;
     [SerializeField] List<GameObject> playerPositions;
+    [SerializeField] List<GameObject> playerPrefabs;
+
+    //Singleton Class
     public static GameController Instance { get; private set; }
-    private List<PlayerController> playerInstances;
-
-
-    public List<int> DealerScore { get; private set; } = new List<int>();
-    [SerializeField] List<GameObject> dealerCardsPosition;
-
 
     private void Awake()
     {
@@ -34,46 +49,47 @@ public class GameController : MonoBehaviour
         }
     }
 
-    // Start is called before the first frame update
-    void Start()
+    private void Start()
     {
         GameStart();
     }
 
-    void SpawnPlayers()
+    private void SpawnPlayers()
     {
         //Spawning the players in Place
     }
 
-    void GameStart()
+    private void GameStart()
     {
         SpawnPlayers();
         StartRound();
     }
-    void StartRound()
+    private void StartRound()
     {
-        //TODO FIX
-        roundState = RoundState.PLAYERTURN;
+        //Update round state and notify
+        roundState = RoundState.START;
         onRoundStateChange.Invoke(roundState);
-        //Initialization when starting a new Round
-        DealerScore.Clear();    
-        DealerScore.Add(0);
-        ClearDealerCardPosition();
+
+        //Initialization setup of dealer and players
+        DealerController.Instance.ResetDealer();
+        foreach (PlayerController player in playerInstances)
+        {
+            player.ResetPlayer();
+        }
+
+        //Next round state
         StartPlayerTurn();
     }
 
-    void ClearDealerCardPosition()
+    
+    private void StartPlayerTurn()
     {
-        //Clearing dealer cards
-    }
-
-    void StartPlayerTurn()
-    {
+        //Update round state and notify
         roundState = RoundState.PLAYERTURN;
         onRoundStateChange.Invoke(roundState);
     }
 
-    bool CheckIfPlayersTurnIsFinished()
+    private bool CheckIfPlayersTurnIsFinished()
     {
         foreach(PlayerController player in playerInstances)
         {
@@ -82,11 +98,41 @@ public class GameController : MonoBehaviour
                 return false;
             }
         }
+        //No player is asking for cards, we can go to dealer turn
         return true;
     }
 
+    //Coroutine that ends the current round and starts a new one, after some delay and UI adjustments
+    private IEnumerator CO_StartNewRound()
+    {
+        yield return new WaitForSeconds(3.0f);
+        //Update UI
+        yield return new WaitForSeconds(2.0f);
+        StartRound();
+    }
+
+    //This function constructs the game states, storing who wons the current round
+    private GameState checkGameState()
+    {
+        GameState gameState = new GameState();
+        gameState.DealerScore = BlackJackUtils.CalculateBestScore(DealerController.Instance.DealerScore);
+        gameState.PlayerInfos = new List<PlayerInfo>();
+        for(int i=0; i<playerInstances.Count; i++)
+        {
+            PlayerInfo playerInfo = new PlayerInfo();
+            playerInfo.Name = "Player " + (i + 1);
+            playerInfo.Score = BlackJackUtils.CalculateBestScore(playerInstances[i].PlayerScore);
+            playerInfo.Won = playerInfo.Score > gameState.DealerScore;
+            gameState.PlayerInfos.Add(playerInfo);
+        }
+        return gameState;
+    }
+
+
+    //This function will listen any player when its status change
     public void PlayerStatusChanged()
     {
+        //If no player is asking for cards, we can go to dealer turn
         if (CheckIfPlayersTurnIsFinished())
         {
             roundState = RoundState.DEALERTURN;
@@ -94,30 +140,38 @@ public class GameController : MonoBehaviour
         }
     }
 
-    public void ReceiveDealerCard(Card card)
+    //TODO: remove in final build
+    public void FinishPlayerTurn()
     {
-        for(int i = 0; i < DealerScore.Count; i++)
-        {
-            DealerScore[i] = DealerScore[i] + card.values[0];
-        }
-        //I received an Ace
-        if (card.values.Count > 1)
-        {
-            List<int> dealerScoreCopy = DealerScore.GetRange(0, DealerScore.Count);
-            for (int i = 0; i < dealerScoreCopy.Count; i++)
-            {
-                dealerScoreCopy[i] = dealerScoreCopy[i] - card.values[0] + card.values[1];
-            }
-            DealerScore.AddRange(dealerScoreCopy);
-        }
+        roundState = RoundState.DEALERTURN;
+        onRoundStateChange.Invoke(roundState);
     }
 
+    
+    //This function will be called by the UI or if dealer score > 21 to go to the end state of the round
     public void EndDealerTurn()
     {
+        //Update round state and notify
         roundState = RoundState.END;
         onRoundStateChange.Invoke(roundState);
         //Checking winning conditions
+        GameState gameState = checkGameState();
+        Debug.Log("GAME FINISHED!");
+        Debug.Log("GAME STATE:");
+        Debug.Log($"Dealer Score: {gameState.DealerScore}");
+        foreach(PlayerInfo playerInfo in gameState.PlayerInfos)
+        {
+            Debug.Log("---PlayerINFO");
+            Debug.Log($"Player Name: {playerInfo.Name}");
+            Debug.Log($"Player Score: {playerInfo.Score}");
+            Debug.Log($"Player Won?: {playerInfo.Won}");
+        }
+        //Passing gameState to UI for displaying
         //Waiting some seconds
-        StartRound();
+        StartCoroutine(CO_StartNewRound());   
     }
+
+
+
+    
 }
