@@ -15,7 +15,7 @@ GameObject:
   - component: {fileID: -4522961497576300849}
   m_Layer: 0
   m_Name: Red_PlayingCards_Diamond11_00
-  m_TagString: Untagged
+  m_TagString: Card
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
