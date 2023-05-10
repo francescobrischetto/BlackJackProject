@@ -12,7 +12,10 @@ public class PlayerController : MonoBehaviour
 
     private VisualCardPositionController cardPositionController;
 
-    [SerializeField] UnityEvent onCardReceived;
+    public UnityEvent onPlayerStateChanged;
+
+    public int RequestedScore = 17;
+    public float RandomPercentage = 0.0f;
 
     private void OnEnable()
     {
@@ -32,24 +35,50 @@ public class PlayerController : MonoBehaviour
 
     void OnCollisionEnter(Collision collision)
     {
-        if(collision.gameObject.tag == "Card")
+        if(collision.gameObject.tag == "Card" && State == PlayerState.ONEMORECARD && cardPositionController.IsThereSpace())
         {
+
             //Add that card to my table
+            cardPositionController.setCardOnTable(collision.gameObject);
             //Update PlayerScore
             UpdatePlayerScore(collision.gameObject);
             //Destroy the card
             Destroy(collision.gameObject);
-            onCardReceived.Invoke();
+            //Check if we can change state
+            int bestScore = BlackJackUtils.CalculateBestScore(PlayerScore);
+            if(bestScore >= RequestedScore && bestScore < 21)
+            {
+                //above this X points the AI player has x % of wanting another card
+                //So, if it is <= than 1-x% he will stop asking a card
+                if (Random.value <= 1 - RandomPercentage)
+                {
+                    transform.GetComponent<MeshRenderer>().material.color = Color.yellow;
+                    State = PlayerState.STOP;
+                    onPlayerStateChanged.Invoke();
+                }
+            }
+            else if(bestScore == 0)
+            {
+                transform.GetComponent<MeshRenderer>().material.color = Color.black;
+                State = PlayerState.BUST;
+                onPlayerStateChanged.Invoke();
+            }
+            else if(bestScore == 21)
+            {
+                transform.GetComponent<MeshRenderer>().material.color = Color.yellow;
+                State = PlayerState.STOP;
+                onPlayerStateChanged.Invoke();
+            }
+
         }
     }
 
     private void UpdatePlayerScore(GameObject goCard)
     {
-        cardPositionController.setCardOnTable(goCard);
+        
         Card card = DeckController.Instance.GetCardFromObject(goCard);
         if(card != null)
         {
-            Debug.Log($"PLAYER Received {card.name} and value {card.values[0]}");
             ReceiveDealerCard(card);
         }
         else
@@ -60,17 +89,18 @@ public class PlayerController : MonoBehaviour
     }
     private void ReceiveDealerCard(Card card)
     {
-        StartCoroutine(CO_ReceivedCardDisplay());
         List<int> newScores = BlackJackUtils.CalculateNewScores(PlayerScore, card);
         PlayerScore.Clear();
         PlayerScore.AddRange(newScores);
     }
 
+    //TODO: Remove this visual display
     private IEnumerator CO_ReceivedCardDisplay()
     {
+        Color initialColor = transform.GetComponent<MeshRenderer>().material.color;
         transform.GetComponent<MeshRenderer>().material.color = Color.red;
-        yield return new WaitForSeconds(0.5f);
-        transform.GetComponent<MeshRenderer>().material.color = Color.white;
+        yield return new WaitForSeconds(0.25f);
+        transform.GetComponent<MeshRenderer>().material.color = initialColor;
     }
 
 
@@ -78,6 +108,10 @@ public class PlayerController : MonoBehaviour
     {
         PlayerScore.Clear();
         PlayerScore.Add(0);
+        State = PlayerState.NOTPLAYERTURN;
+        //TODO: Remove
+        transform.GetComponent<MeshRenderer>().material.color = Color.blue;
+        cardPositionController.ResetSlots();
     }
 
     public void reactToRoundStateChanges(RoundState state)
@@ -86,10 +120,13 @@ public class PlayerController : MonoBehaviour
         {
             case RoundState.START:
                 ResetPlayer();
-                cardPositionController.ResetSlots();
                 break;
 
             case RoundState.PLAYERTURN:
+                //Change player state
+                //TODO: Remove
+                transform.GetComponent<MeshRenderer>().material.color = Color.green;
+                State = PlayerState.ONEMORECARD;
                 break;
 
             case RoundState.DEALERTURN:
@@ -97,7 +134,6 @@ public class PlayerController : MonoBehaviour
                 break;
 
             case RoundState.END:
-                Debug.Log("Goodbye from player!");
                 break;
         }
     }

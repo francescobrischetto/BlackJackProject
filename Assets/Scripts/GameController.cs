@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 using UnityEngine.Events;
+using GD.MinMaxSlider;
 
 public struct PlayerInfo
 {
@@ -36,6 +37,10 @@ public class GameController : MonoBehaviour
     [SerializeField] int numberOfPlayers = 7;
     [SerializeField] List<GameObject> playerPositions;
     [SerializeField] List<GameObject> playerPrefabs;
+    [MinMaxSlider(0, 21)]
+    [SerializeField] Vector2Int RequestedScore = new Vector2Int(0, 21);
+    [MinMaxSlider(0, 1)]
+    [SerializeField] Vector2 RandomPercentage = new Vector2(0f, 1f);
 
     //Singleton Class
     public static GameController Instance { get; private set; }
@@ -69,7 +74,12 @@ public class GameController : MonoBehaviour
             GameObject newPlayer = Instantiate(playerPrefabs[0], playerPositions[randomIndex].transform.position, Quaternion.identity, playerPositions[randomIndex].transform);
             playerIndexes.RemoveAt(randomPlayerIndex);
             newPlayer.name = "Player " + i;
-            playerInstances.Add(newPlayer.GetComponent<PlayerController>());
+            PlayerController newPlayerController = newPlayer.GetComponent<PlayerController>();
+            newPlayerController.RandomPercentage = Random.Range(RandomPercentage.x, RandomPercentage.y);
+            newPlayerController.RequestedScore = Random.Range(RequestedScore.x, RequestedScore.y+1);
+            newPlayerController.onPlayerStateChanged.AddListener(PlayerStatusChanged);
+            playerInstances.Add(newPlayerController);
+            Debug.Log($"Spawned player {newPlayer.name} with requested score {newPlayerController.RequestedScore} and random percentage {newPlayerController.RandomPercentage}");
 
         }
     }
@@ -179,7 +189,4 @@ public class GameController : MonoBehaviour
         StartCoroutine(CO_StartNewRound());   
     }
 
-
-
-    
 }

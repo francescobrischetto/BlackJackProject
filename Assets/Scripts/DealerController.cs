@@ -37,12 +37,12 @@ public class DealerController : MonoBehaviour
     {
         DealerScore.Clear();
         DealerScore.Add(0);
+        cardPositionController.ResetSlots();
     }
 
     public void ReceiveDealerCard(Card card)
     {
         cardPositionController.setCardOnTable(card.cardAsset);
-        Debug.Log($"DEALER Received {card.name} and value {card.values[0]}");
         List<int> newScores = BlackJackUtils.CalculateNewScores(DealerScore, card);
         DealerScore.Clear();
         DealerScore.AddRange(newScores);

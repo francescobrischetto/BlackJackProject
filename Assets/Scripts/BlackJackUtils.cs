@@ -27,7 +27,14 @@ public static class BlackJackUtils
     
     public static int CalculateBestScore(List<int> scores)
     {
-        scores.Add(0);
-        return scores.Where(x => x <= 21).OrderByDescending(x => x).ToList()[0];
+        List<int> bestScores = scores.Where(x => x <= 21).OrderByDescending(x => x).ToList();
+        if(bestScores.Count > 0)
+        {
+            return bestScores[0];
+        }
+        else
+        {
+            return 0;
+        }
     }
 }

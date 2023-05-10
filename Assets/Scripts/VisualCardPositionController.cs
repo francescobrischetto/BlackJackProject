@@ -9,6 +9,10 @@ public class VisualCardPositionController : MonoBehaviour
     [SerializeField] List<GameObject> cardPositions;
     private int indexFreeSlot = 0;
 
+    public bool IsThereSpace()
+    {
+        return indexFreeSlot < cardPositions.Count;
+    }
     public void ResetSlots()
     {
         ClearSlots();
