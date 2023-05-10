@@ -1724,7 +1724,15 @@ PrefabInstance:
     - target: {fileID: 1472378358063075826, guid: 01ac19d982a96ea40b9f970b5cfd055c, type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Target
       value: 
-      objectReference: {fileID: 1254881372}
+      objectReference: {fileID: 1382646692}
+    - target: {fileID: 1472378358063075826, guid: 01ac19d982a96ea40b9f970b5cfd055c, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
+      value: DealerStop
+      objectReference: {fileID: 0}
+    - target: {fileID: 1472378358063075826, guid: 01ac19d982a96ea40b9f970b5cfd055c, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_TargetAssemblyTypeName
+      value: DealerController, Assembly-CSharp
+      objectReference: {fileID: 0}
     - target: {fileID: 1472378358575615094, guid: 01ac19d982a96ea40b9f970b5cfd055c, type: 3}
       propertyPath: m_Pivot.x
       value: 0
@@ -2097,6 +2105,34 @@ PrefabInstance:
       propertyPath: cardPositionController
       value: 
       objectReference: {fileID: 182222690}
+    - target: {fileID: 2342389286195527591, guid: 53d01e56eca778b4eb7de1dc940b66fe, type: 3}
+      propertyPath: onDealerStateChanged.m_PersistentCalls.m_Calls.Array.size
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 2342389286195527591, guid: 53d01e56eca778b4eb7de1dc940b66fe, type: 3}
+      propertyPath: onDealerStateChanged.m_PersistentCalls.m_Calls.Array.data[0].m_Mode
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2342389286195527591, guid: 53d01e56eca778b4eb7de1dc940b66fe, type: 3}
+      propertyPath: onDealerStateChanged.m_PersistentCalls.m_Calls.Array.data[0].m_Target
+      value: 
+      objectReference: {fileID: 1254881372}
+    - target: {fileID: 2342389286195527591, guid: 53d01e56eca778b4eb7de1dc940b66fe, type: 3}
+      propertyPath: onDealerStateChanged.m_PersistentCalls.m_Calls.Array.data[0].m_CallState
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 2342389286195527591, guid: 53d01e56eca778b4eb7de1dc940b66fe, type: 3}
+      propertyPath: onDealerStateChanged.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
+      value: DealerStatusChanged
+      objectReference: {fileID: 0}
+    - target: {fileID: 2342389286195527591, guid: 53d01e56eca778b4eb7de1dc940b66fe, type: 3}
+      propertyPath: onDealerStateChanged.m_PersistentCalls.m_Calls.Array.data[0].m_TargetAssemblyTypeName
+      value: GameController, Assembly-CSharp
+      objectReference: {fileID: 0}
+    - target: {fileID: 2342389286195527591, guid: 53d01e56eca778b4eb7de1dc940b66fe, type: 3}
+      propertyPath: onDealerStateChanged.m_PersistentCalls.m_Calls.Array.data[0].m_Arguments.m_ObjectArgumentAssemblyTypeName
+      value: UnityEngine.Object, UnityEngine
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 53d01e56eca778b4eb7de1dc940b66fe, type: 3}
 --- !u!4 &5708573622089804280 stripped
@@ -2113,15 +2149,19 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 8848876365721312258, guid: 5e09ca6b15cfbf14e9a1562a941909c2, type: 3}
       propertyPath: RequestedScore.x
-      value: 16
+      value: 15
+      objectReference: {fileID: 0}
+    - target: {fileID: 8848876365721312258, guid: 5e09ca6b15cfbf14e9a1562a941909c2, type: 3}
+      propertyPath: RequestedScore.y
+      value: 19
       objectReference: {fileID: 0}
     - target: {fileID: 8848876365721312258, guid: 5e09ca6b15cfbf14e9a1562a941909c2, type: 3}
       propertyPath: RandomPercentage.x
-      value: 0.3
+      value: 0.2
       objectReference: {fileID: 0}
     - target: {fileID: 8848876365721312258, guid: 5e09ca6b15cfbf14e9a1562a941909c2, type: 3}
       propertyPath: RandomPercentage.y
-      value: 0.5
+      value: 0.4
       objectReference: {fileID: 0}
     - target: {fileID: 8848876365721312258, guid: 5e09ca6b15cfbf14e9a1562a941909c2, type: 3}
       propertyPath: playerPositions.Array.data[0]
