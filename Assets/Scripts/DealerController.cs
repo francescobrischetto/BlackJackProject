@@ -7,8 +7,7 @@ public class DealerController : MonoBehaviour
     //Singleton Class
     public static DealerController Instance { get; private set; }
     public List<int> DealerScore { get; private set; } = new List<int>();
-    [SerializeField] List<GameObject> dealerCardsPosition;
-
+    [SerializeField] VisualCardPositionController cardPositionController;
 
     private void Awake()
     {
@@ -42,6 +41,7 @@ public class DealerController : MonoBehaviour
 
     public void ReceiveDealerCard(Card card)
     {
+        cardPositionController.setCardOnTable(card.cardAsset);
         Debug.Log($"DEALER Received {card.name} and value {card.values[0]}");
         List<int> newScores = BlackJackUtils.CalculateNewScores(DealerScore, card);
         DealerScore.Clear();

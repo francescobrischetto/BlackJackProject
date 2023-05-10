@@ -27,13 +27,11 @@ public class VisualCardPositionController : MonoBehaviour
     {
         if(indexFreeSlot >=0 && indexFreeSlot < cardPositions.Count)
         {
-            GameObject newCardOnTable = Instantiate(goCard, cardPositions[indexFreeSlot].transform.position + new Vector3(0,0.3f,0), Quaternion.identity, cardPositions[indexFreeSlot].transform);
-            //Debug.Log(newCardOnTable);
-            //EditorGUIUtility.PingObject(newCardOnTable);
-
+            GameObject newCardOnTable = Instantiate(goCard, cardPositions[indexFreeSlot].transform.position, Quaternion.identity, cardPositions[indexFreeSlot].transform);
             newCardOnTable.transform.localScale = new Vector3(1, 1, 1);
-            //Rigidbody cardRigidBody = newCardOnTable.GetComponent<Rigidbody>();
-            //Destroy(cardRigidBody);
+            newCardOnTable.transform.localRotation = Quaternion.Euler(0, 90, 0);
+            Rigidbody cardRigidBody = newCardOnTable.GetComponent<Rigidbody>();
+            Destroy(cardRigidBody);
             indexFreeSlot++;
         }
     }
