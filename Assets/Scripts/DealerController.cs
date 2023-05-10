@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Events;
 
 public class DealerController : MonoBehaviour
 {
@@ -8,6 +9,10 @@ public class DealerController : MonoBehaviour
     public static DealerController Instance { get; private set; }
     public List<int> DealerScore { get; private set; } = new List<int>();
     [SerializeField] VisualCardPositionController cardPositionController;
+
+    public PlayerState DealerState { get; private set; }
+    public UnityEvent onDealerStateChanged;
+
 
     private void Awake()
     {
@@ -26,23 +31,49 @@ public class DealerController : MonoBehaviour
     {
         ResetDealerScore();
         ClearDealerCardPosition();
+        DealerState = PlayerState.NOTPLAYERTURN;
     }
 
     private void ClearDealerCardPosition()
     {
-        //Clearing dealer cards
+        cardPositionController.ResetSlots();
     }
 
     private void ResetDealerScore()
     {
         DealerScore.Clear();
         DealerScore.Add(0);
-        cardPositionController.ResetSlots();
     }
 
     public void ReceiveDealerCard(Card card)
     {
-        cardPositionController.setCardOnTable(card.cardAsset);
+        if(DealerState == PlayerState.ONEMORECARD)
+        {
+            cardPositionController.setCardOnTable(card.cardAsset);
+            UpdateDealerScore(card);
+            int bestScore = BlackJackUtils.CalculateBestScore(DealerScore);
+            if (bestScore == 0)
+            {
+                DealerState = PlayerState.BUST;
+                onDealerStateChanged.Invoke();
+            }
+            else if (bestScore == 21)
+            {
+                DealerState = PlayerState.STOP;
+                onDealerStateChanged.Invoke();
+            }
+        }
+        
+    }
+
+    public void DealerStop()
+    {
+        DealerState = PlayerState.STOP;
+        onDealerStateChanged.Invoke();
+    }
+
+    private void UpdateDealerScore(Card card)
+    {
         List<int> newScores = BlackJackUtils.CalculateNewScores(DealerScore, card);
         DealerScore.Clear();
         DealerScore.AddRange(newScores);
@@ -60,6 +91,7 @@ public class DealerController : MonoBehaviour
                 break;
 
             case RoundState.DEALERTURN:
+                DealerState = PlayerState.ONEMORECARD;
                 break;
 
             case RoundState.END:

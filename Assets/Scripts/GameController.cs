@@ -166,6 +166,7 @@ public class GameController : MonoBehaviour
     }
 
     
+    //TODO: React to dealer changes
     //This function will be called by the UI or if dealer score > 21 to go to the end state of the round
     public void EndDealerTurn()
     {
