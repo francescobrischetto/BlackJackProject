@@ -9,7 +9,7 @@ public class PlayerController : MonoBehaviour
 {
     //This object is responsible of placing the cards on the table visually
     private VisualCardPositionController cardPositionController;
-    
+    private AnimationController animationController;
     public PlayerState State { get; private set; }
     //A list with all the possible scores of the player (considering that some cards may have more than one value E.G. Ace 1,11)
     public List<int> PlayerScore { get; private set; } = new List<int>();
@@ -29,7 +29,10 @@ public class PlayerController : MonoBehaviour
             //Getting the visual card position controller from sibilings
             cardPositionController = transform.parent.GetComponentInChildren<VisualCardPositionController>();
         }
-
+        if (animationController == null)
+        {
+            animationController = GetComponent<AnimationController>();
+        }
     }
 
     private void OnDisable()
@@ -56,8 +59,8 @@ public class PlayerController : MonoBehaviour
                 //So, if the percentage <= 1-x% he will stop asking a card because he is above the threshold
                 if (Random.value <= 1 - percentageToRequestAboveThreshold)
                 {
-                    //TODO: Remove Mesh Rendered visual reacting!
-                    transform.GetComponent<MeshRenderer>().material.color = Color.yellow;
+                    //Animation to stop asking cards
+                    animationController.StopAskingCards();
                     //Update player state and notify
                     State = PlayerState.STOP;
                     onPlayerStateChanged.Invoke();
@@ -66,8 +69,8 @@ public class PlayerController : MonoBehaviour
             //my score goes beyond 21, so the function returned 0
             else if (bestScore == 0)
             {
-                //TODO: Remove Mesh Rendered visual reacting!
-                transform.GetComponent<MeshRenderer>().material.color = Color.black;
+                //Animation to tell that the player is bust
+                animationController.PlayerIsBust();
                 //Update player state and notify
                 State = PlayerState.BUST;
                 onPlayerStateChanged.Invoke();
@@ -75,8 +78,8 @@ public class PlayerController : MonoBehaviour
             //my score is exactly 21, so there is no point to continue. Stopping the player to request cards
             else if (bestScore == 21)
             {
-                //TODO: Remove Mesh Rendered visual reacting!
-                transform.GetComponent<MeshRenderer>().material.color = Color.yellow;
+                //Animation to stop asking cards
+                animationController.StopAskingCards();
                 //Update player state and notify
                 State = PlayerState.STOP;
                 onPlayerStateChanged.Invoke();
@@ -112,9 +115,10 @@ public class PlayerController : MonoBehaviour
         //Clearing the board visually
         cardPositionController.ResetSlots();
         State = PlayerState.NOTPLAYERTURN;
-        //TODO: Remove Mesh Rendered visual reacting!
-        transform.GetComponent<MeshRenderer>().material.color = Color.blue;
-        
+        //Resetting the Animation States
+        animationController.resetAnimations();
+
+
     }
 
     private void ResetPlayerScore()
@@ -132,6 +136,16 @@ public class PlayerController : MonoBehaviour
         percentageToRequestAboveThreshold = newPercentage;
     }
 
+    public void PlayerWon()
+    {
+        animationController.RoundEndWon();
+    }
+
+    public void PlayerLost()
+    {
+        animationController.RoundEndLost();
+    }
+
     /// <summary>
     /// This method allows the player to react to any state change of the round
     /// </summary>
@@ -145,8 +159,8 @@ public class PlayerController : MonoBehaviour
                 break;
 
             case RoundState.PLAYERTURN:
-                //TODO: Remove Mesh Rendered visual reacting!
-                transform.GetComponent<MeshRenderer>().material.color = Color.green;
+                //Animation to keep asking cards
+                animationController.AskCards();
                 //The player will start to ask cards
                 State = PlayerState.ONEMORECARD;
                 break;

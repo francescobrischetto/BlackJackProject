@@ -62,7 +62,9 @@ public class GameController : MonoBehaviour
             //Choosing a random place to spawn the player
             int randomPlayerIndex = Random.Range(0, playerIndexes.Count);
             int randomIndex = playerIndexes[randomPlayerIndex];
-            GameObject newPlayer = Instantiate(playerPrefabs[0], playerPositions[randomIndex].transform.position, Quaternion.identity, playerPositions[randomIndex].transform);
+            int randomPlayerIndexToSpawn = Random.Range(0, playerPrefabs.Count);
+            GameObject newPlayer = Instantiate(playerPrefabs[randomPlayerIndexToSpawn], playerPositions[randomIndex].transform.position, Quaternion.identity, playerPositions[randomIndex].transform);
+            newPlayer.transform.localRotation = Quaternion.identity;
             playerIndexes.RemoveAt(randomPlayerIndex);
             //Setup player name and parameters
             newPlayer.name = "Player " + i;
@@ -158,6 +160,14 @@ public class GameController : MonoBehaviour
             playerInfo.Name = "Player " + (i + 1);
             playerInfo.Score = BlackJackUtils.CalculateBestScore(playerInstances[i].PlayerScore);
             playerInfo.Won = playerInfo.Score > gameState.DealerScore;
+            if (playerInfo.Won)
+            {
+                playerInstances[i].PlayerWon();
+            }
+            else
+            {
+                playerInstances[i].PlayerLost();
+            }
             gameState.PlayerInfos.Add(playerInfo);
         }
         return gameState;

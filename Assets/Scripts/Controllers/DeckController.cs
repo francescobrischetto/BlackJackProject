@@ -102,6 +102,7 @@ public class DeckController : MonoBehaviour
                 float dragDistance = Vector3.Distance(dragEndPosition, dragStartPosition);
                 float dragSpeed = dragDistance / dragDuration;
                 // Check if drag speed is fast enough to launch the card
+                Debug.Log(dragSpeed);
                 if (dragSpeed > lowestDragSpeed)
                 {
                     Vector3 cardPosition = transform.position + transform.up * cardSpawningOffset;
@@ -118,7 +119,7 @@ public class DeckController : MonoBehaviour
                         Vector3 launchDirectionInCameraSpace = (dragEndPosition - dragStartPosition).normalized;
                         Vector3 launchDirectionInWorldSpace = Camera.main.transform.TransformDirection(launchDirectionInCameraSpace);
                         Vector3 forceDirection = launchDirectionInWorldSpace * (dragSpeed / dragAttenuation);
-                        rb.AddForce(forceDirection, ForceMode.Impulse);
+                        rb.AddForce(forceDirection, ForceMode.Force);
                     }
                 }
                 //Resetting the drag behaviour
