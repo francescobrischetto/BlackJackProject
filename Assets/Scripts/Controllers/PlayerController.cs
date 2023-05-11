@@ -10,6 +10,7 @@ public class PlayerController : MonoBehaviour
     //This object is responsible of placing the cards on the table visually
     private VisualCardPositionController cardPositionController;
     private AnimationController animationController;
+    private UIPlayerController uiPlayerController;
     public PlayerState State { get; private set; }
     //A list with all the possible scores of the player (considering that some cards may have more than one value E.G. Ace 1,11)
     public List<int> PlayerScore { get; private set; } = new List<int>();
@@ -33,6 +34,10 @@ public class PlayerController : MonoBehaviour
         {
             animationController = GetComponent<AnimationController>();
         }
+        if(uiPlayerController == null)
+        {
+            uiPlayerController = GetComponent<UIPlayerController>();
+        }
     }
 
     private void OnDisable()
@@ -53,7 +58,8 @@ public class PlayerController : MonoBehaviour
             Destroy(collision.gameObject);
             //Check if we can change state
             int bestScore = BlackJackUtils.CalculateBestScore(PlayerScore);
-            if(bestScore >= thresholdScore && bestScore < 21)
+            uiPlayerController.SetUIPlayerScore(bestScore);
+            if (bestScore >= thresholdScore && bestScore < 21)
             {
                 //above this thresholdScore the AI player has x % of wanting another card
                 //So, if the percentage <= 1-x% he will stop asking a card because he is above the threshold
@@ -63,6 +69,7 @@ public class PlayerController : MonoBehaviour
                     animationController.StopAskingCards();
                     //Update player state and notify
                     State = PlayerState.STOP;
+                    uiPlayerController.SetUIPlayerStatus(PlayerStateString.STOP);
                     onPlayerStateChanged.Invoke();
                 }
             }
@@ -73,6 +80,7 @@ public class PlayerController : MonoBehaviour
                 animationController.PlayerIsBust();
                 //Update player state and notify
                 State = PlayerState.BUST;
+                uiPlayerController.SetUIPlayerStatus(PlayerStateString.BUST);
                 onPlayerStateChanged.Invoke();
             }
             //my score is exactly 21, so there is no point to continue. Stopping the player to request cards
@@ -82,6 +90,7 @@ public class PlayerController : MonoBehaviour
                 animationController.StopAskingCards();
                 //Update player state and notify
                 State = PlayerState.STOP;
+                uiPlayerController.SetUIPlayerStatus(PlayerStateString.STOP);
                 onPlayerStateChanged.Invoke();
             }
 
@@ -112,9 +121,11 @@ public class PlayerController : MonoBehaviour
     private void ResetPlayer()
     {
         ResetPlayerScore();
+        uiPlayerController.SetUIPlayerScore(0);
         //Clearing the board visually
         cardPositionController.ResetSlots();
         State = PlayerState.NOTPLAYERTURN;
+        uiPlayerController.SetUIPlayerStatus(PlayerStateString.NOTPLAYERTURN);
         //Resetting the Animation States
         animationController.resetAnimations();
 
@@ -139,11 +150,13 @@ public class PlayerController : MonoBehaviour
     public void PlayerWon()
     {
         animationController.RoundEndWon();
+        uiPlayerController.SetUIPlayerStatus(PlayerStateString.WON);
     }
 
     public void PlayerLost()
     {
         animationController.RoundEndLost();
+        uiPlayerController.SetUIPlayerStatus(PlayerStateString.LOST);
     }
 
     /// <summary>
@@ -163,6 +176,7 @@ public class PlayerController : MonoBehaviour
                 animationController.AskCards();
                 //The player will start to ask cards
                 State = PlayerState.ONEMORECARD;
+                uiPlayerController.SetUIPlayerStatus(PlayerStateString.ONEMORECARD);
                 break;
 
             case RoundState.DEALERTURN:

@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using System.Linq;
 
+
 //This struct contains the round informations
 public struct GameState
 {
