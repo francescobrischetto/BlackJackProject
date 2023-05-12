@@ -7,15 +7,18 @@ using UnityEngine.Events;
 /// </summary>
 public class DealerController : MonoBehaviour
 {
+    //Dealer internal state
     private PlayerState dealerState;
 
     //Singleton Class
     public static DealerController Instance { get; private set; }
     //A list with all the possible scores of the dealer (considering that some cards may have more than one value E.G. Ace 1,11)
     public List<int> DealerScore { get; private set; } = new List<int>();
-    //Observer pattern to notify other objects when the dealer state change
+    //Event that notifies the change of dealer's state
     public UnityEvent<PlayerState> onDealerStateChanged;
+    //Event that notifies the change of dealer's best score
     public UnityEvent<int> onScoreChanged;
+    //Event that notifies when the dealer receives a card
     public UnityEvent<GameObject> onCardReceived;
 
     private void Awake()
@@ -30,37 +33,43 @@ public class DealerController : MonoBehaviour
             Instance = this;
         }
     }
-
-    private void ResetDealer()
-    {
-        ResetDealerScore();
-        dealerState = PlayerState.NOTPLAYERTURN;
-    }
-
     private void ResetDealerScore()
     {
         DealerScore.Clear();
         DealerScore.Add(0);
         onScoreChanged.Invoke(0);
     }
-    private void UpdateDealerScore(Card card)
+    private void ResetDealer()
+    {
+        ResetDealerScore();
+        dealerState = PlayerState.NOTPLAYERTURN;
+        onDealerStateChanged.Invoke(dealerState);
+    }
+
+    private void UpdateDealerScoreList(Card card)
     {
         List<int> newScores = BlackJackUtils.CalculateNewScores(DealerScore, card);
         DealerScore.Clear();
         DealerScore.AddRange(newScores);
     }
 
+    /// <summary>
+    /// This function will give a card to the dealer.
+    /// </summary>
+    /// <param name="card"></param>
     public void ReceiveCard(Card card)
     {
         if(dealerState == PlayerState.ONEMORECARD)
         {
-            //visually display the card on the table
+            //Notify that the dealer received a card
             onCardReceived.Invoke(card.cardAsset);
-            //calculate new score
-            UpdateDealerScore(card);
+            //Calculate new score list
+            UpdateDealerScoreList(card);
+            //Calculate new best score
             int bestScore = BlackJackUtils.CalculateBestScore(DealerScore);
+            //Notify that the best score of the dealer is updated
             onScoreChanged.Invoke(bestScore);
-            //my score goes beyond 21, so the function returned 0
+            //Dealer score goes beyond 21, so the function returned 0
             if (bestScore == 0)
             {
                 //Update dealer state and notify
@@ -76,9 +85,10 @@ public class DealerController : MonoBehaviour
         
     }
 
-    //This function is called also from the UI, when the dealer decides to stop
+    //This function is called also from the UI with used input when the dealer decides to stop
     public void DealerStop()
     {
+        //We need to check if the dealer was receiving cards (UI button will not work otherwise)
         if(dealerState == PlayerState.ONEMORECARD)
         {
             //Update dealer state and notify
@@ -88,9 +98,8 @@ public class DealerController : MonoBehaviour
         
     }
 
-
     /// <summary>
-    /// This method allows the dealer to react to any state change of the round
+    /// This method allows the dealer to react to any change of the round's state.
     /// </summary>
     /// <param name="state"></param>
     public void reactToRoundStateChanges(RoundState state)

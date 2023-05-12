@@ -18,8 +18,10 @@ public class GameController : MonoBehaviour
     //Singleton Instance
     public static GameController Instance { get; private set; }
 
-    //Observer pattern to notify other objects when the round state change
+    //Event that notifies when the round's state change
     public UnityEvent<RoundState> onRoundStateChange;
+    //Event that notifies no more cards are available
+    public UnityEvent onNoMoreCardsEvent;
 
     [field: Header("Player Spawning settings")]
     //Limited to max 7 players (worst case when the deck can potentially end!)
@@ -47,7 +49,6 @@ public class GameController : MonoBehaviour
         }
     }
 
-    //TODO: Remove the game start on start
     private void Start()
     {
         GameStart();
@@ -63,21 +64,27 @@ public class GameController : MonoBehaviour
             int randomPlayerIndex = Random.Range(0, playerIndexes.Count);
             int randomIndex = playerIndexes[randomPlayerIndex];
             int randomPlayerIndexToSpawn = Random.Range(0, playerPrefabs.Count);
-            GameObject newPlayer = Instantiate(playerPrefabs[randomPlayerIndexToSpawn], playerPositions[randomIndex].transform.position, Quaternion.identity, playerPositions[randomIndex].transform);
+            GameObject newPlayer = Instantiate(playerPrefabs[randomPlayerIndexToSpawn], 
+                playerPositions[randomIndex].transform.position, Quaternion.identity, playerPositions[randomIndex].transform);
             newPlayer.transform.localRotation = Quaternion.identity;
+            //No other players can spawn in this position
             playerIndexes.RemoveAt(randomPlayerIndex);
-            //Setup player name and parameters
+            //Setup player parameters
             newPlayer.name = "Player " + i;
             PlayerController newPlayerController = newPlayer.GetComponent<PlayerController>();
-            VisualCardPositionController visualCardPositionController = playerPositions[randomIndex].transform.GetComponentInChildren<VisualCardPositionController>();
+            //Setup card positioning controller script to react to player behaviours
+            VisualCardPositionController visualCardPositionController = 
+                playerPositions[randomIndex].transform.GetComponentInChildren<VisualCardPositionController>();
             newPlayerController.onCardReceived.AddListener(visualCardPositionController.reactToCardReceived);
             onRoundStateChange.AddListener(visualCardPositionController.reactToRoundChange);
+            //Setup player name, percentage and threshold
             newPlayerController.playerName = newPlayer.name;
             newPlayerController.percentageToRequestAboveThreshold  = Random.Range(RandomPercentage.x, RandomPercentage.y);
             //Random range works differently for ints -> max Exclusive
             newPlayerController.thresholdScore = Random.Range(RequestedScore.x, RequestedScore.y + 1);
             //Subscribing to player event when they change state
             newPlayerController.onPlayerStateChanged.AddListener(PlayerStatusChanged);
+            //Spawning the player panel on the GUI
             UIController.Instance.SpawnPlayerPanel(newPlayerController);
             //Adding the player to the list
             playerInstances.Add(newPlayerController);
@@ -102,7 +109,7 @@ public class GameController : MonoBehaviour
         roundState = RoundState.START;
         onRoundStateChange.Invoke(roundState);
 
-        //Next round state
+        //Next round state -> Started after a delay to be visible
         StartCoroutine(CO_StartPlayerTurn());
     }
 
@@ -117,10 +124,8 @@ public class GameController : MonoBehaviour
         //Update round state and notify
         roundState = RoundState.END;
         onRoundStateChange.Invoke(roundState);
-        //Create game state structure to store who won the current round
-        GameState gameState = CreateGameStateStruct();
-        //Passing gameState to UI for displaying
-        //TODO: Fix
+        //Calculating end game scores and detemining who wons the round
+        EndGameCalculations();
         //Waiting some seconds to go to the new round
         StartCoroutine(CO_StartNewRound());
     }
@@ -138,20 +143,12 @@ public class GameController : MonoBehaviour
         return true;
     }
 
-    /// <summary>
-    /// Coroutine that ends the current round and starts a new one, after some delay and UI adjustments
-    /// </summary>
-    /// <returns></returns>
     private IEnumerator CO_StartNewRound()
     {
         yield return new WaitForSeconds(4.0f);
         StartRound();
     }
 
-    /// <summary>
-    /// Coroutine that ends the current round and starts a new one, after some delay and UI adjustments
-    /// </summary>
-    /// <returns></returns>
     private IEnumerator CO_StartPlayerTurn()
     {
         yield return new WaitForSeconds(2.0f);
@@ -160,21 +157,16 @@ public class GameController : MonoBehaviour
 
 
     /// <summary>
-    /// This function constructs populate the game state structure, storing who wons the current round
+    /// This function calculates end game scores and determines who wons the round
     /// </summary>
     /// <returns></returns>
-    private GameState CreateGameStateStruct()
+    private void EndGameCalculations()
     {
-        GameState gameState = new GameState();
-        gameState.DealerScore = BlackJackUtils.CalculateBestScore(DealerController.Instance.DealerScore);
-        gameState.PlayerInfos = new List<PlayerInfo>();
+        int DealerBestScore = BlackJackUtils.CalculateBestScore(DealerController.Instance.DealerScore);
         for(int i=0; i<playerInstances.Count; i++)
         {
-            PlayerInfo playerInfo = new PlayerInfo();
-            playerInfo.Name = "Player " + (i + 1);
-            playerInfo.Score = BlackJackUtils.CalculateBestScore(playerInstances[i].PlayerScore);
-            playerInfo.Won = playerInfo.Score > gameState.DealerScore;
-            if (playerInfo.Won)
+            int playerScore = BlackJackUtils.CalculateBestScore(playerInstances[i].PlayerScore);
+            if (playerScore > DealerBestScore)
             {
                 playerInstances[i].PlayerWon();
             }
@@ -182,9 +174,7 @@ public class GameController : MonoBehaviour
             {
                 playerInstances[i].PlayerLost();
             }
-            gameState.PlayerInfos.Add(playerInfo);
         }
-        return gameState;
     }
 
 
@@ -206,7 +196,7 @@ public class GameController : MonoBehaviour
     }
 
     /// <summary>
-    /// This function will listen any change in dealer status
+    /// This function will listen any change in dealer state
     /// </summary>
     public void DealerStatusChanged(PlayerState dealerState)
     {
@@ -225,4 +215,21 @@ public class GameController : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// This function is called when no more cards are avaiable -> The dealer will automatically lose and a new round will be started
+    /// </summary>
+    public void NoMoreCards()
+    {
+        //Update round state and notify
+        roundState = RoundState.END;
+        onRoundStateChange.Invoke(roundState);
+        onNoMoreCardsEvent.Invoke();
+        //All the players won
+        for (int i = 0; i < playerInstances.Count; i++)
+        {
+            playerInstances[i].PlayerWon();
+        }
+        //Waiting some seconds to go to the new round
+        StartCoroutine(CO_StartNewRound());
+    }
 }

@@ -1,7 +1,8 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
+/// <summary>
+/// This class is responsible of controlling the animations of the player, based on his current state.
+/// </summary>
 public class AnimationController : MonoBehaviour
 {
     private Animator animator;
@@ -73,6 +74,10 @@ public class AnimationController : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// This function will react to the player change in state to apply the right animation.
+    /// </summary>
+    /// <param name="playerState"></param>
     public void reactPlayerStatusChange(PlayerState playerState)
     {
         switch (playerState)

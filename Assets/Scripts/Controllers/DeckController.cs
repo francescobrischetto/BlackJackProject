@@ -27,6 +27,7 @@ public class DeckController : MonoBehaviour
     //A list of Scriptable Objects "Card" composing the deck
     [SerializeField] List<Card> deckCards;
     [SerializeField] GameObject shuffleParticleEffect;
+    [SerializeField] float shuffleParticleOffset = 0.7f;
 
     [field: Header("Card Launching Settings")]
     //this field determines a Y-axis offset to shift the card spawning point
@@ -49,7 +50,7 @@ public class DeckController : MonoBehaviour
         }
     }
 
-    //TODO: Remove the Shuffle on Start
+    //Optional Shuffle on Start
     private void Start()
     {
         Shuffle();
@@ -141,6 +142,28 @@ public class DeckController : MonoBehaviour
         discardedCards.Clear();
     }
 
+    private void SpawnParticleShuffling()
+    {
+        Vector3 particlePosition = transform.position + transform.up * shuffleParticleOffset;
+        GameObject particleSpawned = Instantiate(shuffleParticleEffect, particlePosition, Quaternion.identity);
+        Destroy(particleSpawned, 1f);
+    }
+
+    /// <summary>
+    /// This coroutine destroys the spawned card after 3 seconds (if it still exists in the game).
+    /// </summary>
+    /// <param name="newCard"></param>
+    /// <returns></returns>
+    private IEnumerator CO_DestroyCardAfterSeconds(GameObject newCard)
+    {
+        yield return new WaitForSeconds(3);
+        if (newCard != null)
+        {
+            Destroy(newCard);
+        }
+
+    }
+
     /// <summary>
     /// This method returns the Scriptable Objects "Card" giving the game object of a card. It can return null.
     /// </summary>
@@ -160,26 +183,12 @@ public class DeckController : MonoBehaviour
     }
 
     /// <summary>
-    /// This coroutine destroys the spawned card after 3 seconds (if it still exists in the game).
+    /// This function Shuffle the deck and spawns a particle effect to tell the user that it is shuffling.
     /// </summary>
-    /// <param name="newCard"></param>
-    /// <returns></returns>
-    private IEnumerator CO_DestroyCardAfterSeconds(GameObject newCard)
-    {
-        yield return new WaitForSeconds(3);
-        if (newCard != null)
-        {
-            Destroy(newCard);
-        }
-
-    }
-
     public void Shuffle()
     {
         deckCards.Shuffle();
-        Vector3 particlePosition = transform.position + transform.up * 0.7f;
-        GameObject particleSpawned = Instantiate(shuffleParticleEffect, particlePosition, Quaternion.identity);
-        Destroy(particleSpawned, 1f);
+        SpawnParticleShuffling();
     }
 
     /// <summary>
@@ -198,8 +207,7 @@ public class DeckController : MonoBehaviour
         }
         else
         {
-            //TODO: Trigger an event?
-            Debug.Log("No more cards!");
+            GameController.Instance.NoMoreCards();
             return null;
         }
         

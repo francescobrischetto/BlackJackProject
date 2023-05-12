@@ -5,6 +5,9 @@ using TMPro;
 using UnityEngine;
 using UnityEngine.Playables;
 
+/// <summary>
+/// This class is responsible of controlling the screen space panel of the player on the UI
+/// </summary>
 public class PlayerInfoPanelDisplayController : MonoBehaviour
 {
     [SerializeField] TMP_Text PlayerName;
@@ -13,17 +16,30 @@ public class PlayerInfoPanelDisplayController : MonoBehaviour
     [SerializeField] TMP_Text Percentage;
     [SerializeField] TMP_Text Score;
 
+    //The public setter is necessary. The right player to listen is setted when this gameObject is spawned.
     public PlayerController PlayerController { private get; set; }
 
+    /// <summary>
+    /// This method allows the class to react to any state change of the player's score
+    /// </summary>
+    /// <param name="newScore"></param>
     public void ScoreUpdated(int newScore)
     {
         Score.text = newScore.ToString();
     }
+
+    /// <summary>
+    /// This method allows the class to react to any state change of the player's state
+    /// </summary>
+    /// <param name="playerState"></param>
     public void PlayerStatusChanged(PlayerState playerState)
     {
         Status.text = UIUtils.GetStatusString(playerState);
     }
 
+    /// <summary>
+    /// This method will setup the component and its initial values
+    /// </summary>
     public void SetupPlayerInfo()
     {
         PlayerController.onPlayerStateChanged.AddListener(PlayerStatusChanged);

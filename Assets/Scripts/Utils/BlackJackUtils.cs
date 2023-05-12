@@ -1,23 +1,6 @@
 using System.Collections.Generic;
 using System.Linq;
 
-
-//This struct contains the round informations
-public struct GameState
-{
-    public int DealerScore;
-    public List<PlayerInfo> PlayerInfos;
-}
-
-//This struct contains the round information of the player
-public struct PlayerInfo
-{
-    public string Name;
-    public int Score;
-    public bool Won;
-
-}
-
 //Enums determining each Round Phase and Player State
 public enum RoundState { START, PLAYERTURN, DEALERTURN, END }
 public enum PlayerState { NOTPLAYERTURN, ONEMORECARD, BUST, STOP, WON, LOST }

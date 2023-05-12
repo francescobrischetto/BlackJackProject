@@ -93,4 +93,9 @@ public class UIController : MonoBehaviour
         DealerScore.text = newScore.ToString();
     }
 
+    public void NoMoreCardsInDeck()
+    {
+        RoundPhase.text = "No Cards!";
+    }
+
 }
