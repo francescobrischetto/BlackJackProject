@@ -13,9 +13,10 @@ public class AnimationController : MonoBehaviour
     private void Awake()
     {
         animator = GetComponent<Animator>();
+        GetComponent<PlayerController>().onPlayerStateChanged.AddListener(reactPlayerStatusChange);
     }
 
-    public void resetAnimations()
+    private void resetAnimations()
     {
         if (animator != null)
         {
@@ -26,7 +27,7 @@ public class AnimationController : MonoBehaviour
         }
     }
 
-    public void AskCards()
+    private void AskCards()
     {
         if (animator != null)
         {
@@ -34,7 +35,7 @@ public class AnimationController : MonoBehaviour
         }
     }
 
-    public void StopAskingCards()
+    private void StopAskingCards()
     {
         if (animator != null)
         {
@@ -43,7 +44,7 @@ public class AnimationController : MonoBehaviour
         }
     }
 
-    public void PlayerIsBust()
+    private void PlayerIsBust()
     {
         if (animator != null)
         {
@@ -52,7 +53,7 @@ public class AnimationController : MonoBehaviour
         }
     }
 
-    public void RoundEndWon()
+    private void RoundEndWon()
     {
         if (animator != null)
         {
@@ -62,7 +63,7 @@ public class AnimationController : MonoBehaviour
         }
     }
 
-    public void RoundEndLost()
+    private void RoundEndLost()
     {
         if (animator != null)
         {
@@ -72,5 +73,29 @@ public class AnimationController : MonoBehaviour
         }
     }
 
+    public void reactPlayerStatusChange(PlayerState playerState)
+    {
+        switch (playerState)
+        {
+            case PlayerState.NOTPLAYERTURN:
+                resetAnimations();
+                break;
+            case PlayerState.ONEMORECARD:
+                AskCards();
+                break;
+            case PlayerState.BUST:
+                PlayerIsBust();
+                break;
+            case PlayerState.STOP:
+                StopAskingCards();
+                break;
+            case PlayerState.WON:
+                RoundEndWon();
+                break;
+            case PlayerState.LOST:
+                RoundEndLost();
+                break;
+        }
+    }
 
 }

@@ -7,10 +7,6 @@ using UnityEngine.Events;
 /// </summary>
 public class PlayerController : MonoBehaviour
 {
-    //This object is responsible of placing the cards on the table visually
-    private VisualCardPositionController cardPositionController;
-    private AnimationController animationController;
-    private UIPlayerController uiPlayerController;
     public PlayerState State { get; private set; }
     //A list with all the possible scores of the player (considering that some cards may have more than one value E.G. Ace 1,11)
     public List<int> PlayerScore { get; private set; } = new List<int>();
@@ -22,24 +18,12 @@ public class PlayerController : MonoBehaviour
     //Observer pattern to notify other objects when the player state change
     public UnityEvent<PlayerState> onPlayerStateChanged;
     public UnityEvent<int> onScoreChanged;
+    public UnityEvent<GameObject> onCardReceived;
 
     private void OnEnable()
     {
         //Reacting to Round changes
         GameController.Instance.onRoundStateChange.AddListener(reactToRoundStateChanges);
-        if(cardPositionController == null)
-        {
-            //Getting the visual card position controller from sibilings
-            cardPositionController = transform.parent.GetComponentInChildren<VisualCardPositionController>();
-        }
-        if (animationController == null)
-        {
-            animationController = GetComponent<AnimationController>();
-        }
-        if(uiPlayerController == null)
-        {
-            uiPlayerController = GetComponent<UIPlayerController>();
-        }
     }
 
     private void OnDisable()
@@ -50,17 +34,12 @@ public class PlayerController : MonoBehaviour
 
     private void OnCollisionEnter(Collision collision)
     {
-        //Reacting to card collision only if there is space in board and the player is requesting cards
-        if(collision.gameObject.tag == "Card" && State == PlayerState.ONEMORECARD && cardPositionController.IsThereSpace())
+        //Reacting to card collision only if the player is requesting cards
+        if(collision.gameObject.tag == "Card" && State == PlayerState.ONEMORECARD)
         {
-            //Add that card to my table
-            cardPositionController.setCardOnTable(collision.gameObject);
             ReceiveCard(collision.gameObject);
-            //Destroy the card
-            Destroy(collision.gameObject);
             //Check if we can change state
             int bestScore = BlackJackUtils.CalculateBestScore(PlayerScore);
-            uiPlayerController.SetUIPlayerScore(bestScore);
             onScoreChanged.Invoke(bestScore);
             if (bestScore >= thresholdScore && bestScore < 21)
             {
@@ -68,32 +47,23 @@ public class PlayerController : MonoBehaviour
                 //So, if the percentage <= 1-x% he will stop asking a card because he is above the threshold
                 if (Random.value <= 1 - percentageToRequestAboveThreshold)
                 {
-                    //Animation to stop asking cards
-                    animationController.StopAskingCards();
                     //Update player state and notify
                     State = PlayerState.STOP;
-                    uiPlayerController.SetUIPlayerStatus(State);
                     onPlayerStateChanged.Invoke(State);
                 }
             }
             //my score goes beyond 21, so the function returned 0
             else if (bestScore == 0)
             {
-                //Animation to tell that the player is bust
-                animationController.PlayerIsBust();
                 //Update player state and notify
                 State = PlayerState.BUST;
-                uiPlayerController.SetUIPlayerStatus(State);
                 onPlayerStateChanged.Invoke(State);
             }
             //my score is exactly 21, so there is no point to continue. Stopping the player to request cards
             else if (bestScore == 21)
             {
-                //Animation to stop asking cards
-                animationController.StopAskingCards();
                 //Update player state and notify
                 State = PlayerState.STOP;
-                uiPlayerController.SetUIPlayerStatus(State);
                 onPlayerStateChanged.Invoke(State);
             }
 
@@ -112,51 +82,45 @@ public class PlayerController : MonoBehaviour
         Card card = DeckController.Instance.GetCardFromObject(goCard);
         if (card != null)
         {
+            onCardReceived.Invoke(goCard);
             UpdatePlayerScore(card);
         }
-        else
-        {
-            //TODO: Trigger an event to handle?
-            Debug.Log("WARNING! PLAYER RECEIVED A NULL CARD FROM DECK");
-        }   
+        //Destroy the card
+        Destroy(goCard);
     }
 
     private void ResetPlayer()
     {
         ResetPlayerScore();
-        uiPlayerController.SetUIPlayerScore(0);
-        //Clearing the board visually
-        cardPositionController.ResetSlots();
         State = PlayerState.NOTPLAYERTURN;
         onPlayerStateChanged.Invoke(State);
-        uiPlayerController.SetUIPlayerName(playerName);
-        uiPlayerController.SetUIPlayerStatus(State);
-        //Resetting the Animation States
-        animationController.resetAnimations();
 
 
+    }
+
+    private void AskCards()
+    {
+        State = PlayerState.ONEMORECARD;
+        onPlayerStateChanged.Invoke(State);
     }
 
     private void ResetPlayerScore()
     {
         PlayerScore.Clear();
         PlayerScore.Add(0);
+        onScoreChanged.Invoke(0);
     }
 
     public void PlayerWon()
     {
-        animationController.RoundEndWon();
         State = PlayerState.WON;
         onPlayerStateChanged.Invoke(State);
-        uiPlayerController.SetUIPlayerStatus(State);
     }
 
     public void PlayerLost()
     {
-        animationController.RoundEndLost();
         State = PlayerState.LOST;
         onPlayerStateChanged.Invoke(State);
-        uiPlayerController.SetUIPlayerStatus(State);
     }
 
     /// <summary>
@@ -172,12 +136,7 @@ public class PlayerController : MonoBehaviour
                 break;
 
             case RoundState.PLAYERTURN:
-                //Animation to keep asking cards
-                animationController.AskCards();
-                //The player will start to ask cards
-                State = PlayerState.ONEMORECARD;
-                onPlayerStateChanged.Invoke(State);
-                uiPlayerController.SetUIPlayerStatus(State);
+                AskCards();
                 break;
 
             case RoundState.DEALERTURN:

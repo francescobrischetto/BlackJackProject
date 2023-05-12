@@ -10,8 +10,17 @@ public class UIPlayerController : MonoBehaviour
     [SerializeField]
     private TMP_Text playerName;
 
+    private void Awake()
+    {
+        PlayerController playerController = GetComponent<PlayerController>();
+        playerController.onPlayerStateChanged.AddListener(SetUIPlayerStatus);
+        playerController.onScoreChanged.AddListener(SetUIPlayerScore);
+        
+
+    }
     public void SetUIPlayerStatus(PlayerState playerState)
     {
+        SetUIPlayerName(GetComponent<PlayerController>().playerName);
         status.text = UIUtils.GetStatusString(playerState);
     }
 

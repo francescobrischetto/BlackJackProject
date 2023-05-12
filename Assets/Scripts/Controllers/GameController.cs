@@ -69,6 +69,9 @@ public class GameController : MonoBehaviour
             //Setup player name and parameters
             newPlayer.name = "Player " + i;
             PlayerController newPlayerController = newPlayer.GetComponent<PlayerController>();
+            VisualCardPositionController visualCardPositionController = playerPositions[randomIndex].transform.GetComponentInChildren<VisualCardPositionController>();
+            newPlayerController.onCardReceived.AddListener(visualCardPositionController.reactToCardReceived);
+            onRoundStateChange.AddListener(visualCardPositionController.reactToRoundChange);
             newPlayerController.playerName = newPlayer.name;
             newPlayerController.percentageToRequestAboveThreshold  = Random.Range(RandomPercentage.x, RandomPercentage.y);
             //Random range works differently for ints -> max Exclusive

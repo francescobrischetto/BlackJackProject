@@ -13,11 +13,10 @@ public class DealerController : MonoBehaviour
     public static DealerController Instance { get; private set; }
     //A list with all the possible scores of the dealer (considering that some cards may have more than one value E.G. Ace 1,11)
     public List<int> DealerScore { get; private set; } = new List<int>();
-    //This object is responsible of placing the cards on the table visually
-    [SerializeField] VisualCardPositionController cardPositionController;
     //Observer pattern to notify other objects when the dealer state change
     public UnityEvent<PlayerState> onDealerStateChanged;
     public UnityEvent<int> onScoreChanged;
+    public UnityEvent<GameObject> onCardReceived;
 
     private void Awake()
     {
@@ -35,8 +34,6 @@ public class DealerController : MonoBehaviour
     private void ResetDealer()
     {
         ResetDealerScore();
-        //Clearing the board visually
-        cardPositionController.ResetSlots();
         dealerState = PlayerState.NOTPLAYERTURN;
     }
 
@@ -58,7 +55,7 @@ public class DealerController : MonoBehaviour
         if(dealerState == PlayerState.ONEMORECARD)
         {
             //visually display the card on the table
-            cardPositionController.setCardOnTable(card.cardAsset);
+            onCardReceived.Invoke(card.cardAsset);
             //calculate new score
             UpdateDealerScore(card);
             int bestScore = BlackJackUtils.CalculateBestScore(DealerScore);

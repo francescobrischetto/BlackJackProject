@@ -2982,6 +2982,10 @@ PrefabInstance:
       value: 
       objectReference: {fileID: 182222690}
     - target: {fileID: 2342389286195527591, guid: 53d01e56eca778b4eb7de1dc940b66fe, type: 3}
+      propertyPath: onCardReceived.m_PersistentCalls.m_Calls.Array.size
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 2342389286195527591, guid: 53d01e56eca778b4eb7de1dc940b66fe, type: 3}
       propertyPath: onScoreChanged.m_PersistentCalls.m_Calls.Array.size
       value: 1
       objectReference: {fileID: 0}
@@ -2990,16 +2994,32 @@ PrefabInstance:
       value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 2342389286195527591, guid: 53d01e56eca778b4eb7de1dc940b66fe, type: 3}
+      propertyPath: onCardReceived.m_PersistentCalls.m_Calls.Array.data[0].m_Mode
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2342389286195527591, guid: 53d01e56eca778b4eb7de1dc940b66fe, type: 3}
       propertyPath: onScoreChanged.m_PersistentCalls.m_Calls.Array.data[0].m_Mode
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 2342389286195527591, guid: 53d01e56eca778b4eb7de1dc940b66fe, type: 3}
+      propertyPath: onCardReceived.m_PersistentCalls.m_Calls.Array.data[0].m_Target
+      value: 
+      objectReference: {fileID: 182222690}
     - target: {fileID: 2342389286195527591, guid: 53d01e56eca778b4eb7de1dc940b66fe, type: 3}
       propertyPath: onScoreChanged.m_PersistentCalls.m_Calls.Array.data[0].m_Target
       value: 
       objectReference: {fileID: 1218040336}
     - target: {fileID: 2342389286195527591, guid: 53d01e56eca778b4eb7de1dc940b66fe, type: 3}
+      propertyPath: onCardReceived.m_PersistentCalls.m_Calls.Array.data[0].m_CallState
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 2342389286195527591, guid: 53d01e56eca778b4eb7de1dc940b66fe, type: 3}
       propertyPath: onScoreChanged.m_PersistentCalls.m_Calls.Array.data[0].m_CallState
       value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 2342389286195527591, guid: 53d01e56eca778b4eb7de1dc940b66fe, type: 3}
+      propertyPath: onCardReceived.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
+      value: reactToCardReceived
       objectReference: {fileID: 0}
     - target: {fileID: 2342389286195527591, guid: 53d01e56eca778b4eb7de1dc940b66fe, type: 3}
       propertyPath: onDealerStateChanged.m_PersistentCalls.m_Calls.Array.data[0].m_Mode
@@ -3030,6 +3050,10 @@ PrefabInstance:
       value: DealerStatusChanged
       objectReference: {fileID: 0}
     - target: {fileID: 2342389286195527591, guid: 53d01e56eca778b4eb7de1dc940b66fe, type: 3}
+      propertyPath: onCardReceived.m_PersistentCalls.m_Calls.Array.data[0].m_TargetAssemblyTypeName
+      value: VisualCardPositionController, Assembly-CSharp
+      objectReference: {fileID: 0}
+    - target: {fileID: 2342389286195527591, guid: 53d01e56eca778b4eb7de1dc940b66fe, type: 3}
       propertyPath: onScoreChanged.m_PersistentCalls.m_Calls.Array.data[0].m_TargetAssemblyTypeName
       value: UIController, Assembly-CSharp
       objectReference: {fileID: 0}
@@ -3040,6 +3064,10 @@ PrefabInstance:
     - target: {fileID: 2342389286195527591, guid: 53d01e56eca778b4eb7de1dc940b66fe, type: 3}
       propertyPath: onDealerStateChanged.m_PersistentCalls.m_Calls.Array.data[1].m_TargetAssemblyTypeName
       value: GameController, Assembly-CSharp
+      objectReference: {fileID: 0}
+    - target: {fileID: 2342389286195527591, guid: 53d01e56eca778b4eb7de1dc940b66fe, type: 3}
+      propertyPath: onCardReceived.m_PersistentCalls.m_Calls.Array.data[0].m_Arguments.m_ObjectArgumentAssemblyTypeName
+      value: UnityEngine.Object, UnityEngine
       objectReference: {fileID: 0}
     - target: {fileID: 2342389286195527591, guid: 53d01e56eca778b4eb7de1dc940b66fe, type: 3}
       propertyPath: onScoreChanged.m_PersistentCalls.m_Calls.Array.data[0].m_Arguments.m_ObjectArgumentAssemblyTypeName
@@ -3125,10 +3153,14 @@ PrefabInstance:
       objectReference: {fileID: 1945251951}
     - target: {fileID: 8848876365721312258, guid: 5e09ca6b15cfbf14e9a1562a941909c2, type: 3}
       propertyPath: onRoundStateChange.m_PersistentCalls.m_Calls.Array.size
-      value: 3
+      value: 4
       objectReference: {fileID: 0}
     - target: {fileID: 8848876365721312258, guid: 5e09ca6b15cfbf14e9a1562a941909c2, type: 3}
       propertyPath: onRoundStateChange.m_PersistentCalls.m_Calls.Array.data[2].m_Mode
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8848876365721312258, guid: 5e09ca6b15cfbf14e9a1562a941909c2, type: 3}
+      propertyPath: onRoundStateChange.m_PersistentCalls.m_Calls.Array.data[3].m_Mode
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 8848876365721312258, guid: 5e09ca6b15cfbf14e9a1562a941909c2, type: 3}
@@ -3144,7 +3176,15 @@ PrefabInstance:
       value: 
       objectReference: {fileID: 1218040336}
     - target: {fileID: 8848876365721312258, guid: 5e09ca6b15cfbf14e9a1562a941909c2, type: 3}
+      propertyPath: onRoundStateChange.m_PersistentCalls.m_Calls.Array.data[3].m_Target
+      value: 
+      objectReference: {fileID: 182222690}
+    - target: {fileID: 8848876365721312258, guid: 5e09ca6b15cfbf14e9a1562a941909c2, type: 3}
       propertyPath: onRoundStateChange.m_PersistentCalls.m_Calls.Array.data[2].m_CallState
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 8848876365721312258, guid: 5e09ca6b15cfbf14e9a1562a941909c2, type: 3}
+      propertyPath: onRoundStateChange.m_PersistentCalls.m_Calls.Array.data[3].m_CallState
       value: 2
       objectReference: {fileID: 0}
     - target: {fileID: 8848876365721312258, guid: 5e09ca6b15cfbf14e9a1562a941909c2, type: 3}
@@ -3152,11 +3192,23 @@ PrefabInstance:
       value: reactToRoundStateChanges
       objectReference: {fileID: 0}
     - target: {fileID: 8848876365721312258, guid: 5e09ca6b15cfbf14e9a1562a941909c2, type: 3}
+      propertyPath: onRoundStateChange.m_PersistentCalls.m_Calls.Array.data[3].m_MethodName
+      value: reactToRoundChange
+      objectReference: {fileID: 0}
+    - target: {fileID: 8848876365721312258, guid: 5e09ca6b15cfbf14e9a1562a941909c2, type: 3}
       propertyPath: onRoundStateChange.m_PersistentCalls.m_Calls.Array.data[2].m_TargetAssemblyTypeName
       value: UIController, Assembly-CSharp
       objectReference: {fileID: 0}
     - target: {fileID: 8848876365721312258, guid: 5e09ca6b15cfbf14e9a1562a941909c2, type: 3}
+      propertyPath: onRoundStateChange.m_PersistentCalls.m_Calls.Array.data[3].m_TargetAssemblyTypeName
+      value: VisualCardPositionController, Assembly-CSharp
+      objectReference: {fileID: 0}
+    - target: {fileID: 8848876365721312258, guid: 5e09ca6b15cfbf14e9a1562a941909c2, type: 3}
       propertyPath: onRoundStateChange.m_PersistentCalls.m_Calls.Array.data[2].m_Arguments.m_ObjectArgumentAssemblyTypeName
+      value: UnityEngine.Object, UnityEngine
+      objectReference: {fileID: 0}
+    - target: {fileID: 8848876365721312258, guid: 5e09ca6b15cfbf14e9a1562a941909c2, type: 3}
+      propertyPath: onRoundStateChange.m_PersistentCalls.m_Calls.Array.data[3].m_Arguments.m_ObjectArgumentAssemblyTypeName
       value: UnityEngine.Object, UnityEngine
       objectReference: {fileID: 0}
     - target: {fileID: 8848876365721312260, guid: 5e09ca6b15cfbf14e9a1562a941909c2, type: 3}

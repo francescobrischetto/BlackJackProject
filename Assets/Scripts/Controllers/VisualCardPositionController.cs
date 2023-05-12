@@ -18,21 +18,36 @@ public class VisualCardPositionController : MonoBehaviour
         }
     }
 
-    public bool IsThereSpace()
-    {
-        return indexFreeSlot < cardPositions.Count;
-    }
-    public void ResetSlots()
+    private void ResetSlots()
     {
         ClearSlots();
         indexFreeSlot = 0;
+    }
+
+    public void reactToRoundChange(RoundState roundState)
+    {
+        switch (roundState)
+        {
+            case RoundState.START:
+                ResetSlots();
+                break;
+
+            case RoundState.PLAYERTURN:
+                break;
+
+            case RoundState.DEALERTURN:
+                break;
+
+            case RoundState.END:
+                break;
+        }
     }
 
     /// <summary>
     /// Put visually the cards on the first available slot.
     /// </summary>
     /// <param name="goCard"></param>
-    public void setCardOnTable(GameObject goCard)
+    public void reactToCardReceived(GameObject goCard)
     {
         if(indexFreeSlot >=0 && indexFreeSlot < cardPositions.Count)
         {
