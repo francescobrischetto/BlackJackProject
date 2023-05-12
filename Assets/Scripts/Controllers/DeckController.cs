@@ -177,9 +177,9 @@ public class DeckController : MonoBehaviour
     public void Shuffle()
     {
         deckCards.Shuffle();
-        Vector3 particlePosition = transform.position + transform.up * 0.5f;
+        Vector3 particlePosition = transform.position + transform.up * 0.7f;
         GameObject particleSpawned = Instantiate(shuffleParticleEffect, particlePosition, Quaternion.identity);
-        Destroy(particleSpawned, 0.5f);
+        Destroy(particleSpawned, 1f);
     }
 
     /// <summary>

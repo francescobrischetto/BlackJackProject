@@ -2241,7 +2241,11 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   thresholdScore: 17
   percentageToRequestAboveThreshold: 0
+  playerName: 
   onPlayerStateChanged:
+    m_PersistentCalls:
+      m_Calls: []
+  onScoreChanged:
     m_PersistentCalls:
       m_Calls: []
 --- !u!114 &556703692665187068
@@ -2270,6 +2274,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   score: {fileID: 6913882809335722691}
   status: {fileID: 4426387052280639298}
+  playerName: {fileID: 6870197887351696626}
 --- !u!1 &8100711009448620545
 GameObject:
   m_ObjectHideFlags: 0
@@ -2501,9 +2506,57 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 7310548930184995335}
     m_Modifications:
+    - target: {fileID: 2652752499578166058, guid: a5d17a6265e5fd34eba8cb94495a0a5d, type: 3}
+      propertyPath: m_AnchorMax.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2652752499578166058, guid: a5d17a6265e5fd34eba8cb94495a0a5d, type: 3}
+      propertyPath: m_AnchorMin.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2652752499578166058, guid: a5d17a6265e5fd34eba8cb94495a0a5d, type: 3}
+      propertyPath: m_AnchoredPosition.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2652752499578166058, guid: a5d17a6265e5fd34eba8cb94495a0a5d, type: 3}
+      propertyPath: m_AnchoredPosition.y
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 5956249678290350663, guid: a5d17a6265e5fd34eba8cb94495a0a5d, type: 3}
       propertyPath: m_Name
       value: World Player Canvas
+      objectReference: {fileID: 0}
+    - target: {fileID: 5981361120262756174, guid: a5d17a6265e5fd34eba8cb94495a0a5d, type: 3}
+      propertyPath: m_AnchorMax.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5981361120262756174, guid: a5d17a6265e5fd34eba8cb94495a0a5d, type: 3}
+      propertyPath: m_AnchorMin.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5981361120262756174, guid: a5d17a6265e5fd34eba8cb94495a0a5d, type: 3}
+      propertyPath: m_AnchoredPosition.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5981361120262756174, guid: a5d17a6265e5fd34eba8cb94495a0a5d, type: 3}
+      propertyPath: m_AnchoredPosition.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8525978679392405401, guid: a5d17a6265e5fd34eba8cb94495a0a5d, type: 3}
+      propertyPath: m_AnchorMax.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8525978679392405401, guid: a5d17a6265e5fd34eba8cb94495a0a5d, type: 3}
+      propertyPath: m_AnchorMin.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8525978679392405401, guid: a5d17a6265e5fd34eba8cb94495a0a5d, type: 3}
+      propertyPath: m_AnchoredPosition.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8525978679392405401, guid: a5d17a6265e5fd34eba8cb94495a0a5d, type: 3}
+      propertyPath: m_AnchoredPosition.y
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 8876997069574692433, guid: a5d17a6265e5fd34eba8cb94495a0a5d, type: 3}
       propertyPath: m_Pivot.x
@@ -2607,6 +2660,17 @@ RectTransform:
   m_CorrespondingSourceObject: {fileID: 8876997069574692433, guid: a5d17a6265e5fd34eba8cb94495a0a5d, type: 3}
   m_PrefabInstance: {fileID: 3689316683559871046}
   m_PrefabAsset: {fileID: 0}
+--- !u!114 &6870197887351696626 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 7810593527032614580, guid: a5d17a6265e5fd34eba8cb94495a0a5d, type: 3}
+  m_PrefabInstance: {fileID: 3689316683559871046}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f4688fdb7df04437aeb418b961361dc5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!114 &6913882809335722691 stripped
 MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 7836296554785837189, guid: a5d17a6265e5fd34eba8cb94495a0a5d, type: 3}

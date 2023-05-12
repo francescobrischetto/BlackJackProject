@@ -2,34 +2,56 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public enum PlayerStateString { NOTPLAYERTURN, ONEMORECARD, BUST, STOP, WON, LOST}
 public static class UIUtils
 {
-    public static string GetStatusString(PlayerStateString playerStateString)
+    public static string GetStatusString(PlayerState playerState)
     {
         string result = "";
-        switch (playerStateString)
+        switch (playerState)
         {
-            case PlayerStateString.NOTPLAYERTURN:
+            case PlayerState.NOTPLAYERTURN:
                 result = "Not My Turn";
                 break;
-            case PlayerStateString.ONEMORECARD:
+            case PlayerState.ONEMORECARD:
                 result = "More Cards";
                 break;
-            case PlayerStateString.BUST:
+            case PlayerState.BUST:
                 result = "Busted";
                 break;
-            case PlayerStateString.STOP:
+            case PlayerState.STOP:
                 result = "Stop";
                 break;
-            case PlayerStateString.WON:
+            case PlayerState.WON:
                 result = "Winner";
                 break;
-            case PlayerStateString.LOST:
+            case PlayerState.LOST:
                 result = "Looser";
                 break;
             default:
                 break;
+
+        }
+        return result;
+    }
+
+    public static string GetRoundStatusString(RoundState roundState)
+    {
+        string result = "";
+        switch (roundState)
+        {
+            case RoundState.START:
+                result = "Starting";
+                break;
+            case RoundState.PLAYERTURN:
+                result = "Players Turn";
+                break;
+            case RoundState.DEALERTURN:
+                result = "Dealer Turn";
+                break;
+            case RoundState.END:
+                result = "Ending";
+                break;
+
 
         }
         return result;

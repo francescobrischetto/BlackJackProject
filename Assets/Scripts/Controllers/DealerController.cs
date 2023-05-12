@@ -17,7 +17,7 @@ public class DealerController : MonoBehaviour
     [SerializeField] VisualCardPositionController cardPositionController;
     //Observer pattern to notify other objects when the dealer state change
     public UnityEvent<PlayerState> onDealerStateChanged;
-
+    public UnityEvent<int> onScoreChanged;
 
     private void Awake()
     {
@@ -44,6 +44,7 @@ public class DealerController : MonoBehaviour
     {
         DealerScore.Clear();
         DealerScore.Add(0);
+        onScoreChanged.Invoke(0);
     }
     private void UpdateDealerScore(Card card)
     {
@@ -61,6 +62,7 @@ public class DealerController : MonoBehaviour
             //calculate new score
             UpdateDealerScore(card);
             int bestScore = BlackJackUtils.CalculateBestScore(DealerScore);
+            onScoreChanged.Invoke(bestScore);
             //my score goes beyond 21, so the function returned 0
             if (bestScore == 0)
             {

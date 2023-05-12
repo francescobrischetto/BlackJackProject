@@ -152,7 +152,11 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   thresholdScore: 17
   percentageToRequestAboveThreshold: 0
+  playerName: 
   onPlayerStateChanged:
+    m_PersistentCalls:
+      m_Calls: []
+  onScoreChanged:
     m_PersistentCalls:
       m_Calls: []
 --- !u!114 &238097882802882624
@@ -181,6 +185,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   score: {fileID: 5473446489909983749}
   status: {fileID: 2984535045194164100}
+  playerName: {fileID: 5427195758790009908}
 --- !u!1 &660605198851476109
 GameObject:
   m_ObjectHideFlags: 0
@@ -2569,6 +2574,17 @@ PrefabInstance:
 --- !u!114 &2984535045194164100 stripped
 MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 1035469921826458884, guid: a5d17a6265e5fd34eba8cb94495a0a5d, type: 3}
+  m_PrefabInstance: {fileID: 2825314596222528128}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f4688fdb7df04437aeb418b961361dc5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &5427195758790009908 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 7810593527032614580, guid: a5d17a6265e5fd34eba8cb94495a0a5d, type: 3}
   m_PrefabInstance: {fileID: 2825314596222528128}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 0}

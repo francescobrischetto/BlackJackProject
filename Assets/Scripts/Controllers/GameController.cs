@@ -69,11 +69,13 @@ public class GameController : MonoBehaviour
             //Setup player name and parameters
             newPlayer.name = "Player " + i;
             PlayerController newPlayerController = newPlayer.GetComponent<PlayerController>();
-            newPlayerController.setPercentageToRequest(Random.Range(RandomPercentage.x, RandomPercentage.y));
+            newPlayerController.playerName = newPlayer.name;
+            newPlayerController.percentageToRequestAboveThreshold  = Random.Range(RandomPercentage.x, RandomPercentage.y);
             //Random range works differently for ints -> max Exclusive
-            newPlayerController.setThresholdScore(Random.Range(RequestedScore.x, RequestedScore.y + 1));
+            newPlayerController.thresholdScore = Random.Range(RequestedScore.x, RequestedScore.y + 1);
             //Subscribing to player event when they change state
             newPlayerController.onPlayerStateChanged.AddListener(PlayerStatusChanged);
+            UIController.Instance.SpawnPlayerPanel(newPlayerController);
             //Adding the player to the list
             playerInstances.Add(newPlayerController);
         }
@@ -98,7 +100,7 @@ public class GameController : MonoBehaviour
         onRoundStateChange.Invoke(roundState);
 
         //Next round state
-        StartPlayerTurn();
+        StartCoroutine(CO_StartPlayerTurn());
     }
 
     private void StartPlayerTurn()
@@ -139,11 +141,20 @@ public class GameController : MonoBehaviour
     /// <returns></returns>
     private IEnumerator CO_StartNewRound()
     {
-        yield return new WaitForSeconds(3.0f);
-        //Update UI
-        yield return new WaitForSeconds(2.0f);
+        yield return new WaitForSeconds(4.0f);
         StartRound();
     }
+
+    /// <summary>
+    /// Coroutine that ends the current round and starts a new one, after some delay and UI adjustments
+    /// </summary>
+    /// <returns></returns>
+    private IEnumerator CO_StartPlayerTurn()
+    {
+        yield return new WaitForSeconds(2.0f);
+        StartPlayerTurn();
+    }
+
 
     /// <summary>
     /// This function constructs populate the game state structure, storing who wons the current round
@@ -177,14 +188,18 @@ public class GameController : MonoBehaviour
     /// <summary>
     /// This function will listen any player when its status change
     /// </summary>
-    public void PlayerStatusChanged()
+    public void PlayerStatusChanged(PlayerState playerState)
     {
-        //If no player is asking for cards, we can go to dealer turn
-        if (IsPlayerTurnFinished())
+        if (playerState != PlayerState.NOTPLAYERTURN && playerState != PlayerState.WON && playerState != PlayerState.LOST)
         {
-            roundState = RoundState.DEALERTURN;
-            onRoundStateChange.Invoke(roundState);
+            //If no player is asking for cards, we can go to dealer turn
+            if (IsPlayerTurnFinished())
+            {
+                roundState = RoundState.DEALERTURN;
+                onRoundStateChange.Invoke(roundState);
+            }
         }
+        
     }
 
     /// <summary>

@@ -20,7 +20,7 @@ public struct PlayerInfo
 
 //Enums determining each Round Phase and Player State
 public enum RoundState { START, PLAYERTURN, DEALERTURN, END }
-public enum PlayerState { NOTPLAYERTURN, ONEMORECARD, BUST, STOP }
+public enum PlayerState { NOTPLAYERTURN, ONEMORECARD, BUST, STOP, WON, LOST }
 
 public static class BlackJackUtils
 {
