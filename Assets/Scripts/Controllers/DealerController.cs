@@ -80,9 +80,13 @@ public class DealerController : MonoBehaviour
     //This function is called also from the UI, when the dealer decides to stop
     public void DealerStop()
     {
-        //Update dealer state and notify
-        dealerState = PlayerState.STOP;
-        onDealerStateChanged.Invoke(dealerState);
+        if(dealerState == PlayerState.ONEMORECARD)
+        {
+            //Update dealer state and notify
+            dealerState = PlayerState.STOP;
+            onDealerStateChanged.Invoke(dealerState);
+        }
+        
     }
 
 

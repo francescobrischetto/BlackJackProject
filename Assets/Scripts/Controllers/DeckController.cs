@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using TMPro;
 using UnityEngine;
 
 /// <summary>
@@ -25,6 +26,7 @@ public class DeckController : MonoBehaviour
     [field: Header("Deck Settings")]
     //A list of Scriptable Objects "Card" composing the deck
     [SerializeField] List<Card> deckCards;
+    [SerializeField] GameObject shuffleParticleEffect;
 
     [field: Header("Card Launching Settings")]
     //this field determines a Y-axis offset to shift the card spawning point
@@ -102,7 +104,6 @@ public class DeckController : MonoBehaviour
                 float dragDistance = Vector3.Distance(dragEndPosition, dragStartPosition);
                 float dragSpeed = dragDistance / dragDuration;
                 // Check if drag speed is fast enough to launch the card
-                Debug.Log(dragSpeed);
                 if (dragSpeed > lowestDragSpeed)
                 {
                     Vector3 cardPosition = transform.position + transform.up * cardSpawningOffset;
@@ -176,6 +177,9 @@ public class DeckController : MonoBehaviour
     public void Shuffle()
     {
         deckCards.Shuffle();
+        Vector3 particlePosition = transform.position + transform.up * 0.5f;
+        GameObject particleSpawned = Instantiate(shuffleParticleEffect, particlePosition, Quaternion.identity);
+        Destroy(particleSpawned, 0.5f);
     }
 
     /// <summary>
