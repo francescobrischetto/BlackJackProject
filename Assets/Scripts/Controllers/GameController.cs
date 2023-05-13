@@ -23,19 +23,19 @@ public class GameController : MonoBehaviour
     public UnityEvent<RoundState> onRoundStateChange;
     //Event that notifies no more cards are available
     public UnityEvent onNoMoreCardsEvent;
+    //Event that notifies that the pause menu button was pressed
+    public UnityEvent onPauseMenuEvent;
 
     [field: Header("Player Spawning settings")]
     //Limited to max 7 players (worst case when the deck can potentially end!)
-    [SerializeField] int maxPlayers = 7;
+    private int maxPlayers = 7;
     //Number of players to spawn
-    [SerializeField] int numberOfPlayers = 7;
+    private int numberOfPlayers = 7;
     [SerializeField] List<GameObject> playerPositions;
     [SerializeField] List<GameObject> playerPrefabs;
     //Player behaviours (each parameter is determined randomly inside itss range)
-    [MinMaxSlider(0, 21)]   
-    [SerializeField] Vector2Int RequestedScore = new Vector2Int(0, 21);
-    [MinMaxSlider(0, 1)]    //External plugin just for visual clue
-    [SerializeField] Vector2 RandomPercentage = new Vector2(0f, 1f);
+    private Vector2Int RequestedScore = new Vector2Int(0, 21);
+    private Vector2 RandomPercentage = new Vector2(0f, 1f);
 
     private void Awake()
     {
@@ -48,11 +48,24 @@ public class GameController : MonoBehaviour
         {
             Instance = this;
         }
+        numberOfPlayers = PlayerPrefs.GetInt("playerNumber");
+        RequestedScore.x = (int)PlayerPrefs.GetFloat("RequestedScore-x");
+        RequestedScore.y = (int)PlayerPrefs.GetFloat("RequestedScore-y");
+        RandomPercentage.x = PlayerPrefs.GetFloat("RandomPercentage-x");
+        RandomPercentage.y = PlayerPrefs.GetFloat("RandomPercentage-y");
     }
 
     private void Start()
     {
         GameStart();
+    }
+
+    private void Update()
+    {
+        if (Input.GetKeyDown(KeyCode.Escape))
+        {
+            onPauseMenuEvent.Invoke();
+        }
     }
 
     private void SpawnPlayers()

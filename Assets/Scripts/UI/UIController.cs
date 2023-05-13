@@ -1,6 +1,7 @@
 using TMPro;
 using UnityEngine;
 using UnityEngine.Events;
+using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
 public class UIController : MonoBehaviour
@@ -9,6 +10,7 @@ public class UIController : MonoBehaviour
     [SerializeField] Button ShuffleDeck;
     [SerializeField] Button UserListInfo;
     [SerializeField] GameObject UserListInfoPanel;
+    [SerializeField] GameObject PauseMenuPanel;
 
     [field: Header("PlayerInfo Panel spawning settings")]
     [SerializeField] GameObject PlayerInfoGridContentPanel;
@@ -27,6 +29,7 @@ public class UIController : MonoBehaviour
     private void Awake()
     {
         UserListInfoPanel.SetActive(false);
+        PauseMenuPanel.SetActive(false);
         //Singleton Setup
         if (Instance != null && Instance != this)
         {
@@ -60,6 +63,18 @@ public class UIController : MonoBehaviour
     {
         UserListInfoPanel.SetActive(!UserListInfoPanel.activeInHierarchy);
         Time.timeScale = 1 - Time.timeScale;
+    }
+
+    public void TogglePauseMenu()
+    {
+        PauseMenuPanel.SetActive(!PauseMenuPanel.activeInHierarchy);
+        Time.timeScale = 1 - Time.timeScale;
+    }
+
+    public void BackToMainMenu()
+    {
+        Time.timeScale = 1 - Time.timeScale;
+        SceneManager.LoadScene("MenuScene");
     }
 
     public void reactToRoundStateChanges(RoundState state)
