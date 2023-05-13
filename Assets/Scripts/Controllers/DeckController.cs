@@ -1,6 +1,5 @@
 using System.Collections;
 using System.Collections.Generic;
-using TMPro;
 using UnityEngine;
 
 /// <summary>
@@ -9,7 +8,8 @@ using UnityEngine;
 public class DeckController : MonoBehaviour
 {
     //A list of Scriptable Objects "Card" composing the discarded cards
-    private List<Card> discardedCards = new List<Card>();
+    private List<Card> boardCards = new List<Card>();
+    private List<Card> throwedCards = new List<Card>();
 
     //Those variables controls the mouse dragging mechanism
     private bool isDragging = false;
@@ -85,6 +85,8 @@ public class DeckController : MonoBehaviour
                             if (topCard != null)
                             {
                                 DealerController.Instance.ReceiveCard(topCard);
+                                throwedCards.Remove(topCard);
+                                boardCards.Add(topCard);
                             }
                         }
 
@@ -136,10 +138,11 @@ public class DeckController : MonoBehaviour
         clickControlsEnabled = false;
     }
 
-    private void AppendDiscardedCards()
+    private void AppendBoardCards()
     {
-        deckCards.AddRange(discardedCards);
-        discardedCards.Clear();
+        //Only board cards will be added to the deck (cards received by the player and the dealer) -> throwed cards will be lost
+        deckCards.AddRange(boardCards);
+        boardCards.Clear();
     }
 
     private void SpawnParticleShuffling()
@@ -171,11 +174,13 @@ public class DeckController : MonoBehaviour
     /// <returns></returns>
     public Card GetCardFromObject(GameObject goCard)
     {
-        foreach (Card card in discardedCards)
+        foreach (Card card in throwedCards)
         {
             //Checking the gameobject name to understand if it is a Clone (instance) of one of the discarded cards
             if (goCard.name.Contains(card.cardAsset.name))
             {
+                throwedCards.Remove(card);
+                boardCards.Add(card);
                 return card;
             }
         }
@@ -202,12 +207,15 @@ public class DeckController : MonoBehaviour
             Card returnCard = deckCards[0];
             deckCards.RemoveAt(0);
             //Adding discarded card to the discarded list
-            discardedCards.Add(returnCard);
+            throwedCards.Add(returnCard);
             return returnCard;
         }
         else
         {
             GameController.Instance.NoMoreCards();
+            //Resetting the cards in the deck
+            AppendBoardCards();
+            deckCards.AddRange(throwedCards);
             return null;
         }
         
@@ -223,7 +231,7 @@ public class DeckController : MonoBehaviour
         {
             case RoundState.START:
                 DisableControls();
-                AppendDiscardedCards();
+                AppendBoardCards();
                 break;
 
             case RoundState.PLAYERTURN:

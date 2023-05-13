@@ -78,7 +78,7 @@ public class AnimationController : MonoBehaviour
     /// This function will react to the player change in state to apply the right animation.
     /// </summary>
     /// <param name="playerState"></param>
-    public void reactPlayerStatusChange(PlayerState playerState)
+    public void reactPlayerStatusChange(PlayerState playerState, string playerName)
     {
         switch (playerState)
         {

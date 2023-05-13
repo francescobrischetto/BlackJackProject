@@ -1,9 +1,6 @@
 using System;
-using System.Collections;
-using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
-using UnityEngine.Playables;
 
 /// <summary>
 /// This class is responsible of controlling the screen space panel of the player on the UI
@@ -32,7 +29,7 @@ public class PlayerInfoPanelDisplayController : MonoBehaviour
     /// This method allows the class to react to any state change of the player's state
     /// </summary>
     /// <param name="playerState"></param>
-    public void PlayerStatusChanged(PlayerState playerState)
+    public void PlayerStatusChanged(PlayerState playerState, string playerName)
     {
         Status.text = UIUtils.GetStatusString(playerState);
     }

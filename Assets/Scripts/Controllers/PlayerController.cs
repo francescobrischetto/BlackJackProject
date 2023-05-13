@@ -8,7 +8,7 @@ using UnityEngine.Events;
 public class PlayerController : MonoBehaviour
 {
     //Player internal state
-    public PlayerState State { get; private set; }
+    private PlayerState state;
     //A list with all the possible scores of the player (considering that some cards may have more than one value E.G. Ace 1,11)
     public List<int> PlayerScore { get; private set; } = new List<int>();
 
@@ -18,7 +18,7 @@ public class PlayerController : MonoBehaviour
     public float percentageToRequestAboveThreshold = 0.0f;
 
     //Event that notifies the change of player's state
-    public UnityEvent<PlayerState> onPlayerStateChanged;
+    public UnityEvent<PlayerState,string> onPlayerStateChanged;
     //Event that notifies the change of player's best score
     public UnityEvent<int> onScoreChanged;
     //Event that notifies when the player receives a card
@@ -38,7 +38,7 @@ public class PlayerController : MonoBehaviour
     private void OnCollisionEnter(Collision collision)
     {
         //Reacting to card collision only if the player is requesting cards
-        if(collision.gameObject.tag == "Card" && State == PlayerState.ONEMORECARD)
+        if(collision.gameObject.tag == "Card" && state == PlayerState.ONEMORECARD)
         {
             //Handling the card receiving
             ReceiveCard(collision.gameObject);
@@ -53,23 +53,23 @@ public class PlayerController : MonoBehaviour
                 if (Random.value <= 1 - percentageToRequestAboveThreshold)
                 {
                     //Update player state and notify
-                    State = PlayerState.STOP;
-                    onPlayerStateChanged.Invoke(State);
+                    state = PlayerState.STOP;
+                    onPlayerStateChanged.Invoke(state,playerName);
                 }
             }
             //Player score goes beyond 21, so the function returned 0
             else if (bestScore == 0)
             {
                 //Update player state and notify
-                State = PlayerState.BUST;
-                onPlayerStateChanged.Invoke(State);
+                state = PlayerState.BUST;
+                onPlayerStateChanged.Invoke(state, playerName);
             }
             //Player score is exactly 21, so there is no point to continue. Stopping the player to request cards
             else if (bestScore == 21)
             {
                 //Update player state and notify
-                State = PlayerState.STOP;
-                onPlayerStateChanged.Invoke(State);
+                state = PlayerState.STOP;
+                onPlayerStateChanged.Invoke(state, playerName);
             }
         }
     }
@@ -108,8 +108,8 @@ public class PlayerController : MonoBehaviour
     {
         ResetPlayerScore();
         //Update player state and notify
-        State = PlayerState.NOTPLAYERTURN;
-        onPlayerStateChanged.Invoke(State);
+        state = PlayerState.NOTPLAYERTURN;
+        onPlayerStateChanged.Invoke(state, playerName);
 
 
     }
@@ -117,22 +117,22 @@ public class PlayerController : MonoBehaviour
     private void AskCards()
     {
         //Update player state and notify
-        State = PlayerState.ONEMORECARD;
-        onPlayerStateChanged.Invoke(State);
+        state = PlayerState.ONEMORECARD;
+        onPlayerStateChanged.Invoke(state, playerName);
     }
 
     public void PlayerWon()
     {
         //Update player state and notify
-        State = PlayerState.WON;
-        onPlayerStateChanged.Invoke(State);
+        state = PlayerState.WON;
+        onPlayerStateChanged.Invoke(state, playerName);
     }
 
     public void PlayerLost()
     {
         //Update player state and notify
-        State = PlayerState.LOST;
-        onPlayerStateChanged.Invoke(State);
+        state = PlayerState.LOST;
+        onPlayerStateChanged.Invoke(state, playerName);
     }
 
     /// <summary>

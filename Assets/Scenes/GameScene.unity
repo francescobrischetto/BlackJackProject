@@ -2789,7 +2789,7 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 2115594127620754359, guid: 7e1c5c008b69e1941abbba3fdff2b246, type: 3}
       propertyPath: dragAttenuation
-      value: 7
+      value: 5
       objectReference: {fileID: 0}
     - target: {fileID: 2115594127620754359, guid: 7e1c5c008b69e1941abbba3fdff2b246, type: 3}
       propertyPath: deckCards.Array.size
@@ -3101,7 +3101,7 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 8848876365721312258, guid: 5e09ca6b15cfbf14e9a1562a941909c2, type: 3}
       propertyPath: numberOfPlayers
-      value: 3
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 8848876365721312258, guid: 5e09ca6b15cfbf14e9a1562a941909c2, type: 3}
       propertyPath: RequestedScore.x

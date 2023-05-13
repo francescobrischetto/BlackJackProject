@@ -14,6 +14,7 @@ public class GameController : MonoBehaviour
     private RoundState roundState;
     //List of the controllers of the spawned players
     private List<PlayerController> playerInstances = new List<PlayerController>();
+    Dictionary<string, PlayerState> playerStates = new Dictionary<string, PlayerState>();
 
     //Singleton Instance
     public static GameController Instance { get; private set; }
@@ -88,6 +89,7 @@ public class GameController : MonoBehaviour
             UIController.Instance.SpawnPlayerPanel(newPlayerController);
             //Adding the player to the list
             playerInstances.Add(newPlayerController);
+            playerStates.Add(newPlayerController.playerName, PlayerState.NOTPLAYERTURN);
         }
     }
 
@@ -132,14 +134,27 @@ public class GameController : MonoBehaviour
 
     private bool IsPlayerTurnFinished()
     {
-        foreach(PlayerController player in playerInstances)
+        foreach(var player in playerStates)
         {
-            if (player.State == PlayerState.ONEMORECARD)
+            if (player.Value != PlayerState.STOP && player.Value != PlayerState.BUST)
             {
                 return false;
             }
         }
         //No player is asking for cards, we can go to dealer turn
+        return true;
+    }
+
+    private bool AreAllPlayersBust()
+    {
+        foreach (var player in playerStates)
+        {
+            if (player.Value != PlayerState.BUST)
+            {
+                return false;
+            }
+        }
+        //All players already lost from cards
         return true;
     }
 
@@ -179,20 +194,29 @@ public class GameController : MonoBehaviour
 
 
     /// <summary>
-    /// This function will listen any player when its status change
+    /// TODO: Change THIS This function will listen any player when its status change
     /// </summary>
-    public void PlayerStatusChanged(PlayerState playerState)
+    public void PlayerStatusChanged(PlayerState playerState, string playerName)
     {
-        if (playerState != PlayerState.NOTPLAYERTURN && playerState != PlayerState.WON && playerState != PlayerState.LOST)
+        foreach(var player in playerStates)
         {
-            //If no player is asking for cards, we can go to dealer turn
-            if (IsPlayerTurnFinished())
+            if(player.Key == playerName)
             {
-                roundState = RoundState.DEALERTURN;
-                onRoundStateChange.Invoke(roundState);
+                playerStates[player.Key] = playerState;
+                break;
             }
         }
-        
+        //Does all players already lost from cards
+        if (AreAllPlayersBust())
+        {
+            EndDealerTurn();
+        }
+        //If no player is asking for cards, we can go to dealer turn
+        else if (IsPlayerTurnFinished())
+        {
+            roundState = RoundState.DEALERTURN;
+            onRoundStateChange.Invoke(roundState);
+        }
     }
 
     /// <summary>

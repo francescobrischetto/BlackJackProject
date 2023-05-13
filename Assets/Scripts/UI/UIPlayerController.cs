@@ -18,9 +18,9 @@ public class UIPlayerController : MonoBehaviour
         
 
     }
-    public void SetUIPlayerStatus(PlayerState playerState)
+    public void SetUIPlayerStatus(PlayerState playerState, string playerName)
     {
-        SetUIPlayerName(GetComponent<PlayerController>().playerName);
+        SetUIPlayerName(playerName);
         status.text = UIUtils.GetStatusString(playerState);
     }
 
