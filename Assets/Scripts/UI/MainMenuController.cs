@@ -6,6 +6,9 @@ using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
+/// <summary>
+/// This class is responsible of controlling the screen space UI of the Main Menu.
+/// </summary>
 public class MainMenuController : MonoBehaviour
 {
     //Game Settings -> default
@@ -18,6 +21,7 @@ public class MainMenuController : MonoBehaviour
 
     [SerializeField] GameObject SettingsPanel;
     [SerializeField] GameObject CreditsPanel;
+    [SerializeField] GameObject ControlsPanel;
     [SerializeField] Slider PlayerSlider;
     [SerializeField] MinMaxSlider ThresholdSlider;
     [SerializeField] MinMaxSlider PercentageSlider;
@@ -26,6 +30,8 @@ public class MainMenuController : MonoBehaviour
     {
         SettingsPanel.SetActive(false);
         CreditsPanel.SetActive(false);
+        ControlsPanel.SetActive(false);
+        //Update UI displayed values with the ones that are set in the script via Editor
         PlayerSlider.value = playerNumber;
         PlayerSlider.onValueChanged.Invoke(PlayerSlider.value);
         ThresholdSlider.SetValues(RequestedScore.x, RequestedScore.y,true);
@@ -40,6 +46,11 @@ public class MainMenuController : MonoBehaviour
     public void ToggleCredits()
     {
         CreditsPanel.SetActive(!CreditsPanel.activeSelf);
+    }
+
+    public void ToggleControls()
+    {
+        ControlsPanel.SetActive(!ControlsPanel.activeSelf);
     }
 
     public void playerNumberUpdatedNumber(float num)
@@ -71,6 +82,7 @@ public class MainMenuController : MonoBehaviour
 
     public void StartGame()
     {
+        //Using player prefs to pass game settings to the game scene
         PlayerPrefs.SetInt("playerNumber", playerNumber);
         PlayerPrefs.SetFloat("RequestedScore-x", RequestedScore.x);
         PlayerPrefs.SetFloat("RequestedScore-y", RequestedScore.y);

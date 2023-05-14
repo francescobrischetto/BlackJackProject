@@ -5,6 +5,9 @@ using System.Linq;
 public enum RoundState { START, PLAYERTURN, DEALERTURN, END }
 public enum PlayerState { NOTPLAYERTURN, ONEMORECARD, BUST, STOP, WON, LOST }
 
+/// <summary>
+/// This class provides utils method for the blackjack game.
+/// </summary>
 public static class BlackJackUtils
 {
 
@@ -21,7 +24,7 @@ public static class BlackJackUtils
         {
             newScores[i] = scores[i] + card.values[0];
         }
-        //I received an Ace
+        //Received an Ace. We need to duplicate the score list and add the value to all of them. 
         if (card.values.Count > 1)
         {
             List<int> scoreCopy = scores.GetRange(0, scores.Count);

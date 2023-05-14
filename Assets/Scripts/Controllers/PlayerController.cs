@@ -23,17 +23,6 @@ public class PlayerController : MonoBehaviour
     public UnityEvent<int> onScoreChanged;
     //Event that notifies when the player receives a card
     public UnityEvent<GameObject> onCardReceived;
-
-    private void OnEnable()
-    {
-        //Reacting to Round changes
-        GameController.Instance.onRoundStateChange.AddListener(reactToRoundStateChanges);
-    }
-
-    private void OnDisable()
-    {
-        GameController.Instance.onRoundStateChange.RemoveListener(reactToRoundStateChanges);
-    }
     
     private void OnCollisionEnter(Collision collision)
     {

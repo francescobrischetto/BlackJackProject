@@ -1,13 +1,15 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Events;
 
 /// <summary>
 /// This class is responsible of controlling a deck, allowing the user to spawn and throw cards.
 /// </summary>
 public class DeckController : MonoBehaviour
 {
-    //A list of Scriptable Objects "Card" composing the discarded cards
+    //A list of Scriptable Objects "Card" composing the cards on the board
+    //and the cards throwed "in the void" (this will lead to a losing condition for the dealer at some points)
     private List<Card> boardCards = new List<Card>();
     private List<Card> throwedCards = new List<Card>();
 
@@ -36,6 +38,9 @@ public class DeckController : MonoBehaviour
     [SerializeField] float lowestDragSpeed;
     //this field is an attenuation value that lowers the force to apply to the throwed card
     [SerializeField] float dragAttenuation;
+
+    //Event that notifies no more cards are available
+    public UnityEvent onNoMoreCardsEvent;
 
     private void Awake()
     {
@@ -140,7 +145,7 @@ public class DeckController : MonoBehaviour
 
     private void AppendBoardCards()
     {
-        //Only board cards will be added to the deck (cards received by the player and the dealer) -> throwed cards will be lost
+        //Only board cards will be added to the deck (cards received by the player and the dealer) -> throwed cards will be "lost in the void"
         deckCards.AddRange(boardCards);
         boardCards.Clear();
     }
@@ -212,13 +217,18 @@ public class DeckController : MonoBehaviour
         }
         else
         {
-            GameController.Instance.NoMoreCards();
-            //Resetting the cards in the deck
-            AppendBoardCards();
-            deckCards.AddRange(throwedCards);
+            onNoMoreCardsEvent.Invoke();
+            NoMoreCardsInDeck();
             return null;
         }
         
+    }
+
+    public void NoMoreCardsInDeck()
+    {
+        //Resetting the cards in the deck
+        AppendBoardCards();
+        deckCards.AddRange(throwedCards);
     }
     
     /// <summary>

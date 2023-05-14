@@ -2,6 +2,9 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+/// <summary>
+/// This Scriptable object represents a card, providing a list of possibile values and the card asset.
+/// </summary>
 [CreateAssetMenu(fileName="New Card", menuName = "Card")]
 public class Card : ScriptableObject
 {

@@ -4,6 +4,9 @@ using UnityEngine.Events;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
+/// <summary>
+/// This class is responsible of controlling the screen space in-game UI.
+/// </summary>
 public class UIController : MonoBehaviour
 {
     [SerializeField] Button StopDealer;
@@ -28,6 +31,7 @@ public class UIController : MonoBehaviour
 
     private void Awake()
     {
+        //Closing the panels on awake
         UserListInfoPanel.SetActive(false);
         PauseMenuPanel.SetActive(false);
         //Singleton Setup
@@ -41,6 +45,7 @@ public class UIController : MonoBehaviour
         }
     }
 
+    //This method spawn a dedicated player panel for each player in the info panel. It will listen to the player change in state.
     public void SpawnPlayerPanel(PlayerController player)
     {
         GameObject spawnedPlayerPanel = Instantiate(PlayerInfoPanel, Vector3.zero, Quaternion.identity, PlayerInfoGridContentPanel.transform);
@@ -49,6 +54,8 @@ public class UIController : MonoBehaviour
         playerInfoPanelDisplayController.SetupPlayerInfo();
 
     }
+
+    //In this way i have controls on what to do in the top level script when the button are pressed
     public void OnStopDealerClick()
     {
         onStopDealerClick.Invoke();
@@ -62,17 +69,20 @@ public class UIController : MonoBehaviour
     public void OnUserListClick()
     {
         UserListInfoPanel.SetActive(!UserListInfoPanel.activeInHierarchy);
+        //Pauses the game
         Time.timeScale = 1 - Time.timeScale;
     }
 
     public void TogglePauseMenu()
     {
         PauseMenuPanel.SetActive(!PauseMenuPanel.activeInHierarchy);
+        //Pauses the game
         Time.timeScale = 1 - Time.timeScale;
     }
 
     public void BackToMainMenu()
     {
+        //Resetting the game time before leaving the scene
         Time.timeScale = 1 - Time.timeScale;
         SceneManager.LoadScene("MenuScene");
     }
@@ -107,7 +117,7 @@ public class UIController : MonoBehaviour
 
     public void NoMoreCardsInDeck()
     {
-        RoundPhase.text = "No Cards!";
+        RoundPhase.text = UIUtils.GetNoMoreCardsString();
     }
 
 }

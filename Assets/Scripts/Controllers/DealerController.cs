@@ -85,7 +85,7 @@ public class DealerController : MonoBehaviour
         
     }
 
-    //This function is called also from the UI with used input when the dealer decides to stop
+    //This function is called also from the UI when the dealer decides to stop
     public void DealerStop()
     {
         //We need to check if the dealer was receiving cards (UI button will not work otherwise)

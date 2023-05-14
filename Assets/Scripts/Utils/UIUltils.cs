@@ -1,7 +1,6 @@
-using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
-
+/// <summary>
+/// This class provides all the strings needed for the UI.
+/// </summary>
 public static class UIUtils
 {
     public static string GetStatusString(PlayerState playerState)
@@ -55,5 +54,10 @@ public static class UIUtils
 
         }
         return result;
+    }
+
+    public static string GetNoMoreCardsString()
+    {
+        return "No Cards!";
     }
 }

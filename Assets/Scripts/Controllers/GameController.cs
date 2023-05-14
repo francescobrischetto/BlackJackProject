@@ -14,6 +14,7 @@ public class GameController : MonoBehaviour
     private RoundState roundState;
     //List of the controllers of the spawned players
     private List<PlayerController> playerInstances = new List<PlayerController>();
+    //Dictionary with each playerName and playerState. It will be used to determine if player's turn is finished.
     Dictionary<string, PlayerState> playerStates = new Dictionary<string, PlayerState>();
 
     //Singleton Instance
@@ -27,13 +28,14 @@ public class GameController : MonoBehaviour
     public UnityEvent onPauseMenuEvent;
 
     [field: Header("Player Spawning settings")]
+    //Some of those settings are controlled by the menu scene, passing values using PlayerPrefs.
     //Limited to max 7 players (worst case when the deck can potentially end!)
     private int maxPlayers = 7;
     //Number of players to spawn
     private int numberOfPlayers = 7;
     [SerializeField] List<GameObject> playerPositions;
     [SerializeField] List<GameObject> playerPrefabs;
-    //Player behaviours (each parameter is determined randomly inside itss range)
+    //Player behaviours (each parameter is determined randomly inside its range)
     private Vector2Int RequestedScore = new Vector2Int(0, 21);
     private Vector2 RandomPercentage = new Vector2(0f, 1f);
 
@@ -48,6 +50,7 @@ public class GameController : MonoBehaviour
         {
             Instance = this;
         }
+        //Loading settings using PlayerPrefs
         numberOfPlayers = PlayerPrefs.GetInt("playerNumber");
         RequestedScore.x = (int)PlayerPrefs.GetFloat("RequestedScore-x");
         RequestedScore.y = (int)PlayerPrefs.GetFloat("RequestedScore-y");
@@ -62,6 +65,7 @@ public class GameController : MonoBehaviour
 
     private void Update()
     {
+        //Checking if the Pause button is pressed to open the Pause menu
         if (Input.GetKeyDown(KeyCode.Escape))
         {
             onPauseMenuEvent.Invoke();
@@ -103,6 +107,7 @@ public class GameController : MonoBehaviour
             //Adding the player to the list
             playerInstances.Add(newPlayerController);
             playerStates.Add(newPlayerController.playerName, PlayerState.NOTPLAYERTURN);
+            onRoundStateChange.AddListener(newPlayerController.reactToRoundStateChanges);
         }
     }
 
@@ -207,7 +212,7 @@ public class GameController : MonoBehaviour
 
 
     /// <summary>
-    /// TODO: Change THIS This function will listen any player when its status change
+    /// This function will listen any player when its status change, updating the internal dictionary and determining if the player's round is finished.
     /// </summary>
     public void PlayerStatusChanged(PlayerState playerState, string playerName)
     {
@@ -219,7 +224,7 @@ public class GameController : MonoBehaviour
                 break;
             }
         }
-        //Does all players already lost from cards
+        //Does all players already lost from cards? If so, end the round and start a new one!
         if (AreAllPlayersBust())
         {
             EndDealerTurn();

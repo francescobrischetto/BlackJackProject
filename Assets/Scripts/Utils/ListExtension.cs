@@ -1,6 +1,9 @@
 using System;
 using System.Collections.Generic;
 
+/// <summary>
+/// This class provides extension methods for lists.
+/// </summary>
 public static class ListExtension
 {
     private static Random rand = new Random();
